@@ -2,10 +2,10 @@
  * Click nbfs://nbhost/SystemFileSystem/Templates/Licenses/license-default.txt to change this license
  * Click nbfs://nbhost/SystemFileSystem/Templates/Classes/Class.java to edit this template
  */
-package itson.org.ghosttracks.entidades;
+package itson.org.ghosttracks.dtos;
 
-import itson.org.ghosttracks.enums.EstadoOrden;
-import itson.org.ghosttracks.enums.TipoOrden;
+import itson.org.ghosttracks.enums.EstadoOrdenDTO;
+import itson.org.ghosttracks.enums.TipoOrdenDTO;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
@@ -14,38 +14,22 @@ import java.util.List;
  *
  * @author nafbr
  */
-public class Orden {
+public class OrdenDTO {
     private Long idOrden;
     private String folio;
-    private TipoOrden tipoOrden;
+    private TipoOrdenDTO tipoOrden;
     private String comentarios;
     private Double total;
     private LocalDate fechaEntregaEst;
     private LocalDateTime fechaSolicitud;
-    private EstadoOrden estadoOrden;
-    private List<ProductoOrden> productosOrden;
+    private EstadoOrdenDTO estadoOrden;
+    private List<ProductoOrdenDTO> productosOrden;
     private Byte[] imagenRecepcion;
     
-    //Relaciones
     private Long idProovedor;
     private Long idSucursal;
 
-    public Orden() {
-    }
-
-    public Orden(Long idOrden, String folio, TipoOrden tipoOrden, String comentarios, Double total, LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrden estadoOrden, List<ProductoOrden> productosOrden, Byte[] imagenRecepcion, Long idProovedor, Long idSucursal) {
-        this.idOrden = idOrden;
-        this.folio = folio;
-        this.tipoOrden = tipoOrden;
-        this.comentarios = comentarios;
-        this.total = total;
-        this.fechaEntregaEst = fechaEntregaEst;
-        this.fechaSolicitud = fechaSolicitud;
-        this.estadoOrden = estadoOrden;
-        this.productosOrden = productosOrden;
-        this.imagenRecepcion = imagenRecepcion;
-        this.idProovedor = idProovedor;
-        this.idSucursal = idSucursal;
+    public OrdenDTO() {
     }
 
     public Long getIdOrden() {
@@ -64,11 +48,11 @@ public class Orden {
         this.folio = folio;
     }
 
-    public TipoOrden getTipoOrden() {
+    public TipoOrdenDTO getTipoOrden() {
         return tipoOrden;
     }
 
-    public void setTipoOrden(TipoOrden tipoOrden) {
+    public void setTipoOrden(TipoOrdenDTO tipoOrden) {
         this.tipoOrden = tipoOrden;
     }
 
@@ -104,19 +88,19 @@ public class Orden {
         this.fechaSolicitud = fechaSolicitud;
     }
 
-    public EstadoOrden getEstadoOrden() {
+    public EstadoOrdenDTO getEstadoOrden() {
         return estadoOrden;
     }
 
-    public void setEstadoOrden(EstadoOrden estadoOrden) {
+    public void setEstadoOrden(EstadoOrdenDTO estadoOrden) {
         this.estadoOrden = estadoOrden;
     }
 
-    public List<ProductoOrden> getProductosOrden() {
+    public List<ProductoOrdenDTO> getProductosOrden() {
         return productosOrden;
     }
 
-    public void setProductosOrden(List<ProductoOrden> productosOrden) {
+    public void setProductosOrden(List<ProductoOrdenDTO> productosOrden) {
         this.productosOrden = productosOrden;
     }
 

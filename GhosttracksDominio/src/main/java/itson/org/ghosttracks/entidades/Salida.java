@@ -21,4 +21,66 @@ public class Salida {
     //Relaciones
     private Long idSucursal;
     private List<ProductoSalida> productosSalida;
+
+    public Salida() {
+    }
+
+    public Salida(Long idSalida, LocalDate fechaSalida, String comenatriosSalida, RazonSalida razon, Long idSucursal, List<ProductoSalida> productosSalida) {
+        this.idSalida = idSalida;
+        this.fechaSalida = fechaSalida;
+        this.comenatriosSalida = comenatriosSalida;
+        this.razon = razon;
+        this.idSucursal = idSucursal;
+        this.productosSalida = productosSalida;
+    }
+
+    public Long getIdSalida() {
+        return idSalida;
+    }
+
+    public void setIdSalida(Long idSalida) {
+        this.idSalida = idSalida;
+    }
+
+    public LocalDate getFechaSalida() {
+        return fechaSalida;
+    }
+
+    public void setFechaSalida(LocalDate fechaSalida) {
+        this.fechaSalida = fechaSalida;
+    }
+
+    public String getComenatriosSalida() {
+        return comenatriosSalida;
+    }
+
+    public void setComenatriosSalida(String comenatriosSalida) {
+        this.comenatriosSalida = comenatriosSalida;
+    }
+
+    public RazonSalida getRazon() {
+        return razon;
+    }
+
+    public void setRazon(RazonSalida razon) {
+        this.razon = razon;
+    }
+
+    public Long getIdSucursal() {
+        return idSucursal;
+    }
+
+    public void setIdSucursal(Long idSucursal) {
+        this.idSucursal = idSucursal;
+    }
+
+    public List<ProductoSalida> getProductosSalida() {
+        return productosSalida;
+    }
+
+    public void setProductosSalida(List<ProductoSalida> productosSalida) {
+        this.productosSalida = productosSalida;
+    }
+    
+    
 }
