@@ -25,13 +25,32 @@ public class OrdenDTO {
     private EstadoOrdenDTO estadoOrden;
     private List<ProductoOrdenDTO> productosOrden;
     private Byte[] imagenRecepcion;
-    
-    private Long idProovedor;
-    private Long idSucursal;
+    private ProveedorDTO proveedor;
+    private SucursalDTO sucursal;
 
     public OrdenDTO() {
     }
 
+    public OrdenDTO(Long idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total,
+            LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrdenDTO estadoOrden,
+            List<ProductoOrdenDTO> productosOrden, Byte[] imagenRecepcion,
+            ProveedorDTO proveedor, SucursalDTO sucursal) {
+        this.idOrden = idOrden;
+        this.folio = folio;
+        this.tipoOrden = tipoOrden;
+        this.comentarios = comentarios;
+        this.total = total;
+        this.fechaEntregaEst = fechaEntregaEst;
+        this.fechaSolicitud = fechaSolicitud;
+        this.estadoOrden = estadoOrden;
+        this.productosOrden = productosOrden;
+        this.imagenRecepcion = imagenRecepcion;
+        this.proveedor = proveedor;
+        this.sucursal = sucursal;
+    }
+
+    
+    
     public Long getIdOrden() {
         return idOrden;
     }
@@ -112,21 +131,19 @@ public class OrdenDTO {
         this.imagenRecepcion = imagenRecepcion;
     }
 
-    public Long getIdProovedor() {
-        return idProovedor;
+    public ProveedorDTO getProveedor() {
+        return proveedor;
     }
 
-    public void setIdProovedor(Long idProovedor) {
-        this.idProovedor = idProovedor;
+    public void setProveedor(ProveedorDTO proveedor) {
+        this.proveedor = proveedor;
     }
 
-    public Long getIdSucursal() {
-        return idSucursal;
+    public SucursalDTO getSucursal() {
+        return sucursal;
     }
 
-    public void setIdSucursal(Long idSucursal) {
-        this.idSucursal = idSucursal;
+    public void setSucursal(SucursalDTO sucursal) {
+        this.sucursal = sucursal;
     }
-    
-    
 }

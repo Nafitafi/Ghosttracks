@@ -8,15 +8,17 @@ import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
+import java.util.List;
 
 /**
  *
  * @author nafbr
  */
-public interface IOrdenBO {
+public interface IOrdenesBO {
+
     /**
-     * Valida que los datos de la orden sean correctos y completos.
-     * PREGUNTARRRR
+     * Valida que los datos de la orden sean correctos y completos. PREGUNTARRRR
+     *
      * @param dto datos a validar
      * @throws NegocioException si la validación falla
      */
@@ -27,17 +29,25 @@ public interface IOrdenBO {
      *
      * @param dto datos de la orden
      * @return OrdenDTO de la orden creada
-     * @throws itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException
+     * @throws
+     * itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException
      */
-    public abstract OrdenDTO procesarNuevaOrden(NuevaOrdenDTO dto)throws NegocioException;
+    public abstract OrdenDTO procesarNuevaOrden(NuevaOrdenDTO dto) throws NegocioException;
 
     /**
      * Actualiza el estado de una orden existente.
      *
      * @param idOrden identificador de la orden
      * @param nuevoEstado nuevo estado a asignar
-     * @throws itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException
+     * @throws
+     * itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException
      */
-    public abstract void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado)throws NegocioException;
+    void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException;
+
+    List<OrdenDTO> obtenerOrdenes() throws NegocioException;
+
+    OrdenDTO obtenerOrdenPorId(Long idOrden) throws NegocioException;
+
+    OrdenDTO confirmarRecepcion(Long idOrden, byte[] imagen) throws NegocioException;
 
 }

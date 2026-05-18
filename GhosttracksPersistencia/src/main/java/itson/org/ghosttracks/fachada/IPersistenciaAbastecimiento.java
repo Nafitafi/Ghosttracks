@@ -14,9 +14,14 @@ import java.util.List;
  * @author nafbr
  */
 public interface IPersistenciaAbastecimiento {
-    public abstract Orden insertar(Orden orden) throws PersistenciaException;
-    public abstract Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException;
-    public abstract List<Orden> obtenerTodos() throws PersistenciaException;
-    public abstract Orden obtenerPorId(Long id) throws PersistenciaException;
 
+    Orden insertar(Orden orden) throws PersistenciaException;
+
+    Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException;
+
+    Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
+
+    List<Orden> obtenerTodos() throws PersistenciaException;
+
+    Orden obtenerPorId(Long id) throws PersistenciaException;
 }

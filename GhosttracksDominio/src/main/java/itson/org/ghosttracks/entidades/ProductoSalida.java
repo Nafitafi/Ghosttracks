@@ -8,7 +8,7 @@ package itson.org.ghosttracks.entidades;
  *
  * @author nafbr
  */
-class ProductoSalida {
+public class ProductoSalida {
     private Long idProducto;
     private Integer cantidad;
 

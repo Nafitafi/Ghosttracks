@@ -6,8 +6,9 @@ package itson.org.ghosttracks.mocks;
 
 import itson.org.ghosttracks.daos.IOrdenesDAO;
 import itson.org.ghosttracks.entidades.Orden;
+import itson.org.ghosttracks.entidades.ProveedorRef;
+import itson.org.ghosttracks.entidades.SucursalRef;
 import itson.org.ghosttracks.enums.EstadoOrden;
-import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.enums.TipoOrden;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import java.time.LocalDate;
@@ -22,27 +23,37 @@ import java.util.List;
  */
 public class OrdenesMockDAO implements IOrdenesDAO {
 
-    private List<Orden> ordenesDB;
-    private Long generadorId;
+    private final List<Orden> ordenesDB = new ArrayList<>();
+    private Long generadorId = 1L;
 
     public OrdenesMockDAO() {
-        this.ordenesDB = new ArrayList<>();
-        this.generadorId = 1L;
-        
-        // Mock para manipularlo
         Orden o1 = new Orden();
         o1.setIdOrden(generadorId++);
         o1.setFolio("ORD-001");
         o1.setComentarios("Entrega urgente por la mañana.");
         o1.setTotal(2450.75);
-        o1.setFechaEntregaEst(LocalDate.now().plusDays(10));
-        o1.setFechaSolicitud(LocalDateTime.now());
-        o1.setIdProovedor(10L);
-        o1.setIdSucursal(5L);
-        o1.setTipoOrden(TipoOrden.PLANIFICADA); 
-        o1.setEstadoOrden(EstadoOrden.CONFIRMADO);
-        
+        o1.setFechaEntregaEstimada(LocalDate.now().plusDays(10));
+        o1.setFecha(LocalDateTime.now().minusDays(2));
+        o1.setFechaSolicitud(LocalDateTime.now().minusDays(2));
+        o1.setTipoOrden(TipoOrden.PLANIFICADA);
+        o1.setEstado(EstadoOrden.CONFIRMADO);
+        o1.setProveedor(new ProveedorRef("1", "Discos Norte"));
+        o1.setSucursal(new SucursalRef("1", "Obregón Centro"));
         ordenesDB.add(o1);
+
+        Orden o2 = new Orden();
+        o2.setIdOrden(generadorId++);
+        o2.setFolio("ORD-002");
+        o2.setComentarios("Reposición de vinilos.");
+        o2.setTotal(1890.00);
+        o2.setFechaEntregaEstimada(LocalDate.now().plusDays(5));
+        o2.setFecha(LocalDateTime.now().minusDays(1));
+        o2.setFechaSolicitud(LocalDateTime.now().minusDays(1));
+        o2.setTipoOrden(TipoOrden.URGENTE);
+        o2.setEstado(EstadoOrden.ENVIADO);
+        o2.setProveedor(new ProveedorRef("2", "Vinilos del Pacífico"));
+        o2.setSucursal(new SucursalRef("2", "Obregón Norte"));
+        ordenesDB.add(o2);
     }
 
     @Override
@@ -51,8 +62,13 @@ public class OrdenesMockDAO implements IOrdenesDAO {
             throw new PersistenciaException("La orden a insertar no puede ser nula.");
         }
         orden.setIdOrden(generadorId++);
+        if (orden.getFecha() == null) {
+            orden.setFecha(LocalDateTime.now());
+        }
+        if (orden.getFechaSolicitud() == null) {
+            orden.setFechaSolicitud(LocalDateTime.now());
+        }
         ordenesDB.add(orden);
-        
         return orden;
     }
 
@@ -60,7 +76,7 @@ public class OrdenesMockDAO implements IOrdenesDAO {
     public Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException {
         for (Orden orden : ordenesDB) {
             if (orden.getIdOrden().equals(idOrden)) {
-                orden.setEstadoOrden(estado);
+                orden.setEstado(estado);
                 return orden;
             }
         }
@@ -82,4 +98,8 @@ public class OrdenesMockDAO implements IOrdenesDAO {
         throw new PersistenciaException("Orden no encontrada con el ID: " + id);
     }
 
+    @Override
+    public Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }

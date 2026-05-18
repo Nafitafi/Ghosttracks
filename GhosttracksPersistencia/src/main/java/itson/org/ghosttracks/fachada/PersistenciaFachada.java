@@ -7,7 +7,6 @@ package itson.org.ghosttracks.fachada;
 import itson.org.ghosttracks.daos.IOrdenesDAO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.enums.EstadoOrden;
-import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import itson.org.ghosttracks.mocks.OrdenesMockDAO;
 import java.util.List;
@@ -26,40 +25,26 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
 
     @Override
     public Orden insertar(Orden orden) throws PersistenciaException {
-        try {
-            return ordenesDAO.insertar(orden);
-        } catch (PersistenciaException ex) {
-            throw new PersistenciaException(ex.getMessage());
-        }
-
+        return ordenesDAO.insertar(orden);
     }
 
     @Override
     public Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException {
-        try {
-            return ordenesDAO.actualizar(idOrden, estado);
-        } catch (PersistenciaException ex) {
-            throw new PersistenciaException(ex.getMessage());
-        }
+        return ordenesDAO.actualizar(idOrden, estado);
+    }
 
+    @Override
+    public Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException {
+        return ordenesDAO.actualizarOrdenCompleta(orden);
     }
 
     @Override
     public List<Orden> obtenerTodos() throws PersistenciaException {
-        try {
-            return ordenesDAO.obtenerTodos();
-        } catch (PersistenciaException ex) {
-            throw new PersistenciaException(ex.getMessage());
-        }
+        return ordenesDAO.obtenerTodos();
     }
 
     @Override
     public Orden obtenerPorId(Long id) throws PersistenciaException {
-        try {
-            return ordenesDAO.obtenerPorId(id);
-        } catch (PersistenciaException ex) {
-            throw new PersistenciaException(ex.getMessage());
-        }
+        return ordenesDAO.obtenerPorId(id);
     }
-
 }

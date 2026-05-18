@@ -15,37 +15,23 @@ import java.util.List;
  * @author nafbr
  */
 public class Orden {
+
     private Long idOrden;
-    private String folio;
     private TipoOrden tipoOrden;
     private String comentarios;
     private Double total;
-    private LocalDate fechaEntregaEst;
-    private LocalDateTime fechaSolicitud;
-    private EstadoOrden estadoOrden;
+    private LocalDate fechaEntregaEstimada;   
+    private LocalDateTime fecha; // instante de registro en el sistema
+    private String folio;
+    private EstadoOrden estado;
+    private ProveedorRef proveedor;
+    private SucursalRef sucursal;
     private List<ProductoOrden> productosOrden;
-    private Byte[] imagenRecepcion;
-    
-    //Relaciones
-    private Long idProovedor;
-    private Long idSucursal;
+    private LocalDateTime fechaSolicitud;// instante en que se solicitó
+    private LocalDateTime fechaEntrega;// instante real de entrega (null hasta que llega)
+    private byte[] imagen;
 
     public Orden() {
-    }
-
-    public Orden(Long idOrden, String folio, TipoOrden tipoOrden, String comentarios, Double total, LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrden estadoOrden, List<ProductoOrden> productosOrden, Byte[] imagenRecepcion, Long idProovedor, Long idSucursal) {
-        this.idOrden = idOrden;
-        this.folio = folio;
-        this.tipoOrden = tipoOrden;
-        this.comentarios = comentarios;
-        this.total = total;
-        this.fechaEntregaEst = fechaEntregaEst;
-        this.fechaSolicitud = fechaSolicitud;
-        this.estadoOrden = estadoOrden;
-        this.productosOrden = productosOrden;
-        this.imagenRecepcion = imagenRecepcion;
-        this.idProovedor = idProovedor;
-        this.idSucursal = idSucursal;
     }
 
     public Long getIdOrden() {
@@ -54,14 +40,6 @@ public class Orden {
 
     public void setIdOrden(Long idOrden) {
         this.idOrden = idOrden;
-    }
-
-    public String getFolio() {
-        return folio;
-    }
-
-    public void setFolio(String folio) {
-        this.folio = folio;
     }
 
     public TipoOrden getTipoOrden() {
@@ -88,28 +66,52 @@ public class Orden {
         this.total = total;
     }
 
-    public LocalDate getFechaEntregaEst() {
-        return fechaEntregaEst;
+    public LocalDate getFechaEntregaEstimada() {
+        return fechaEntregaEstimada;
     }
 
-    public void setFechaEntregaEst(LocalDate fechaEntregaEst) {
-        this.fechaEntregaEst = fechaEntregaEst;
+    public void setFechaEntregaEstimada(LocalDate fechaEntregaEstimada) {
+        this.fechaEntregaEstimada = fechaEntregaEstimada;
     }
 
-    public LocalDateTime getFechaSolicitud() {
-        return fechaSolicitud;
+    public LocalDateTime getFecha() {
+        return fecha;
     }
 
-    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
-        this.fechaSolicitud = fechaSolicitud;
+    public void setFecha(LocalDateTime fecha) {
+        this.fecha = fecha;
     }
 
-    public EstadoOrden getEstadoOrden() {
-        return estadoOrden;
+    public String getFolio() {
+        return folio;
     }
 
-    public void setEstadoOrden(EstadoOrden estadoOrden) {
-        this.estadoOrden = estadoOrden;
+    public void setFolio(String folio) {
+        this.folio = folio;
+    }
+
+    public EstadoOrden getEstado() {
+        return estado;
+    }
+
+    public void setEstado(EstadoOrden estado) {
+        this.estado = estado;
+    }
+
+    public ProveedorRef getProveedor() {
+        return proveedor;
+    }
+
+    public void setProveedor(ProveedorRef proveedor) {
+        this.proveedor = proveedor;
+    }
+
+    public SucursalRef getSucursal() {
+        return sucursal;
+    }
+
+    public void setSucursal(SucursalRef sucursal) {
+        this.sucursal = sucursal;
     }
 
     public List<ProductoOrden> getProductosOrden() {
@@ -120,29 +122,28 @@ public class Orden {
         this.productosOrden = productosOrden;
     }
 
-    public Byte[] getImagenRecepcion() {
-        return imagenRecepcion;
+    public LocalDateTime getFechaSolicitud() {
+        return fechaSolicitud;
     }
 
-    public void setImagenRecepcion(Byte[] imagenRecepcion) {
-        this.imagenRecepcion = imagenRecepcion;
+    public void setFechaSolicitud(LocalDateTime fechaSolicitud) {
+        this.fechaSolicitud = fechaSolicitud;
     }
 
-    public Long getIdProovedor() {
-        return idProovedor;
+    public LocalDateTime getFechaEntrega() {
+        return fechaEntrega;
     }
 
-    public void setIdProovedor(Long idProovedor) {
-        this.idProovedor = idProovedor;
+    public void setFechaEntrega(LocalDateTime fechaEntrega) {
+        this.fechaEntrega = fechaEntrega;
     }
 
-    public Long getIdSucursal() {
-        return idSucursal;
+    public byte[] getImagen() {
+        return imagen;
     }
 
-    public void setIdSucursal(Long idSucursal) {
-        this.idSucursal = idSucursal;
+    public void setImagen(byte[] imagen) {
+        this.imagen = imagen;
     }
-    
-    
+
 }

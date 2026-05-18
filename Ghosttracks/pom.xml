@@ -12,6 +12,7 @@
         <module>../GhosttracksPersistencia</module>
         <module>../GhosttracksPresentacion</module>
         <module>GhosttracksVentaEnLinea</module>
+        <module>GhosttracksAbastecimiento</module>
         <module>SistemaStripeAPI</module>
         <module>SistemaSkydropxAPI</module>
     </modules>

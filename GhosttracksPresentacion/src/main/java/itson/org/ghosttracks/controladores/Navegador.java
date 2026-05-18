@@ -6,6 +6,7 @@ import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.presentacion.VentanaPrincipal;
 import itson.org.ghosttracks.presentacion.administrador.PanelConfirmarEmpaquetado;
 import itson.org.ghosttracks.presentacion.administrador.PanelDatosPaquete;
+import itson.org.ghosttracks.presentacion.administrador.PantallaOrdenesProveedores;
 import itson.org.ghosttracks.presentacion.administrador.PantallaVentasProcesarAdmin;
 import itson.org.ghosttracks.presentacion.administrador.PantallaVentas;
 import itson.org.ghosttracks.presentacion.cliente.PantallaCarrito;
@@ -29,6 +30,7 @@ public class Navegador {
     private final VentanaPrincipal ventana;
     private final ControlVentaEnLinea ctrlVentaLinea;
     private ControladorVentasAdmin ctrlVentasAdmin;
+    private ControlAbastecimiento ctrlAbastecimiento;
  
     public Navegador(VentanaPrincipal ventana) {
         this.ctrlVentaLinea = new ControlVentaEnLinea(this);
@@ -45,6 +47,7 @@ public class Navegador {
  
     public void cerrarSesion() {
         ctrlVentasAdmin = null;
+        ctrlAbastecimiento = null;
         irLogin();
     }
     
@@ -93,6 +96,7 @@ public class Navegador {
     //Paneles de admin
      public void iniciarSesionAdminExitoso() {
         ctrlVentasAdmin = new ControladorVentasAdmin(this);
+        ctrlAbastecimiento = new ControlAbastecimiento(this);
         ventana.fijarMenuLateral(new pnlMenuLateralAdmin(this));
         ventana.fijarHeader(new PanelHeader(this));
     }
@@ -114,6 +118,12 @@ public class Navegador {
         JPanel panelEnvio = new PanelDatosPaquete(ctrlVentasAdmin, pedidoSeleccionado);
         vistaBase.cambiarPanelAccion(panelEnvio);
         ventana.cambiarPantalla(vistaBase);
+    }
+    
+    public void irOrdenesProveedores() {
+        PantallaOrdenesProveedores vista = new PantallaOrdenesProveedores();
+        vista.setControlador(this.ctrlAbastecimiento);
+        ventana.cambiarPantalla(vista);
     }
     
     //Utilidades

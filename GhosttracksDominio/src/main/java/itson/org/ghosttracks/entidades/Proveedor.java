@@ -8,16 +8,16 @@ package itson.org.ghosttracks.entidades;
  *
  * @author nafbr
  */
-public class Proovedor {
+public class Proveedor {
     private Long idProveedor;
     private String nombreProovedor;
     private Direccion direccionProovedor;
     private String numeroTelefono;
 
-    public Proovedor() {
+    public Proveedor() {
     }
 
-    public Proovedor(Long idProveedor, String nombreProovedor, Direccion direccionProovedor, String numeroTelefono) {
+    public Proveedor(Long idProveedor, String nombreProovedor, Direccion direccionProovedor, String numeroTelefono) {
         this.idProveedor = idProveedor;
         this.nombreProovedor = nombreProovedor;
         this.direccionProovedor = direccionProovedor;

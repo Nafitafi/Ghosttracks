@@ -6,7 +6,6 @@ package itson.org.ghosttracks.daos;
 
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.enums.EstadoOrden;
-import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import java.util.List;
 
@@ -15,8 +14,14 @@ import java.util.List;
  * @author nafbr
  */
 public interface IOrdenesDAO {
+
     public abstract Orden insertar(Orden orden) throws PersistenciaException;
+
     public abstract Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException;
+
+    public abstract Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
+
     public abstract List<Orden> obtenerTodos() throws PersistenciaException;
+
     public abstract Orden obtenerPorId(Long id) throws PersistenciaException;
 }

@@ -33,6 +33,9 @@ public class pnlMenuLateralAdmin extends javax.swing.JPanel {
         btnCerrarSesion = new javax.swing.JButton();
         lblAdminnistracion = new javax.swing.JLabel();
         btnPreventas = new javax.swing.JButton();
+        btnAbastecimiento = new javax.swing.JButton();
+        lblSalidas = new javax.swing.JLabel();
+        lblEntradas = new javax.swing.JLabel();
 
         setBackground(new java.awt.Color(230, 94, 7));
 
@@ -51,6 +54,7 @@ public class pnlMenuLateralAdmin extends javax.swing.JPanel {
         btnInicio.setText("Inicio");
         btnInicio.setBorder(null);
         btnInicio.setPreferredSize(new java.awt.Dimension(250, 40));
+        btnInicio.addActionListener(this::btnInicioActionPerformed);
 
         btnArticulos.setBackground(new java.awt.Color(230, 94, 7));
         btnArticulos.setFont(new java.awt.Font("Corbel", 1, 30)); // NOI18N
@@ -76,35 +80,52 @@ public class pnlMenuLateralAdmin extends javax.swing.JPanel {
         btnPreventas.setText("Preventas");
         btnPreventas.setBorder(null);
         btnPreventas.setPreferredSize(new java.awt.Dimension(250, 40));
+        btnPreventas.addActionListener(this::btnPreventasActionPerformed);
+
+        btnAbastecimiento.setBackground(new java.awt.Color(230, 94, 7));
+        btnAbastecimiento.setFont(new java.awt.Font("Corbel", 1, 30)); // NOI18N
+        btnAbastecimiento.setText("Abastecimiento");
+        btnAbastecimiento.setBorder(null);
+        btnAbastecimiento.setPreferredSize(new java.awt.Dimension(250, 40));
+        btnAbastecimiento.addActionListener(this::btnAbastecimientoActionPerformed);
+
+        lblSalidas.setFont(new java.awt.Font("Corbel", 1, 18)); // NOI18N
+        lblSalidas.setText("Salidas");
+
+        lblEntradas.setFont(new java.awt.Font("Corbel", 1, 18)); // NOI18N
+        lblEntradas.setText("Entradas");
 
         javax.swing.GroupLayout layout = new javax.swing.GroupLayout(this);
         this.setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addGap(0, 25, Short.MAX_VALUE)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
-                    .addComponent(btnPreventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(btnVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
-                .addGap(25, 25, 25))
-            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
-                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
-                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(43, 43, 43))
             .addGroup(layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
                     .addGroup(layout.createSequentialGroup()
                         .addGap(93, 93, 93)
                         .addComponent(lblMenu1))
                     .addGroup(layout.createSequentialGroup()
-                        .addGap(89, 89, 89)
-                        .addComponent(lblAdminnistracion))
-                    .addGroup(layout.createSequentialGroup()
                         .addGap(56, 56, 56)
-                        .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE)))
+                        .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, 187, javax.swing.GroupLayout.PREFERRED_SIZE))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(89, 89, 89)
+                        .addComponent(lblAdminnistracion)))
                 .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE)
+                .addComponent(lblLogo, javax.swing.GroupLayout.PREFERRED_SIZE, 209, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGap(43, 43, 43))
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                .addGap(0, 25, Short.MAX_VALUE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(lblEntradas)
+                    .addComponent(lblSalidas)
+                    .addComponent(btnAbastecimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnPreventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnInicio, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(btnVentas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGap(25, 25, 25))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -121,9 +142,15 @@ public class pnlMenuLateralAdmin extends javax.swing.JPanel {
                 .addComponent(btnArticulos, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(25, 25, 25)
                 .addComponent(btnPreventas, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                .addGap(25, 25, 25)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED)
                 .addComponent(lblAdminnistracion)
-                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 224, Short.MAX_VALUE)
+                .addGap(16, 16, 16)
+                .addComponent(btnAbastecimiento, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                .addComponent(lblEntradas)
+                .addGap(20, 20, 20)
+                .addComponent(lblSalidas)
+                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.RELATED, 109, Short.MAX_VALUE)
                 .addComponent(btnCerrarSesion, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addContainerGap())
         );
@@ -137,15 +164,30 @@ public class pnlMenuLateralAdmin extends javax.swing.JPanel {
         navegador.cerrarSesion();
     }//GEN-LAST:event_btnCerrarSesionActionPerformed
 
+    private void btnAbastecimientoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAbastecimientoActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnAbastecimientoActionPerformed
+
+    private void btnInicioActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnInicioActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnInicioActionPerformed
+
+    private void btnPreventasActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnPreventasActionPerformed
+        // TODO add your handling code here:
+    }//GEN-LAST:event_btnPreventasActionPerformed
+
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
+    private javax.swing.JButton btnAbastecimiento;
     private javax.swing.JButton btnArticulos;
     private javax.swing.JButton btnCerrarSesion;
     private javax.swing.JButton btnInicio;
     private javax.swing.JButton btnPreventas;
     private javax.swing.JButton btnVentas;
     private javax.swing.JLabel lblAdminnistracion;
+    private javax.swing.JLabel lblEntradas;
     private javax.swing.JLabel lblLogo;
     private javax.swing.JLabel lblMenu1;
+    private javax.swing.JLabel lblSalidas;
     // End of variables declaration//GEN-END:variables
 }
