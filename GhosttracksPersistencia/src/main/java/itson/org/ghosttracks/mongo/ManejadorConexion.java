@@ -20,7 +20,7 @@ import org.bson.codecs.pojo.PojoCodecProvider;
  */
 public class ManejadorConexion {
     public static final String CADENA_CONEXION = "mongodb://localhost:27017";
-    public static final String BASE_DATOS = "ghostracks";
+    public static final String BASE_DATOS = "ghosttracks";
 
     private static MongoClient cliente;
 

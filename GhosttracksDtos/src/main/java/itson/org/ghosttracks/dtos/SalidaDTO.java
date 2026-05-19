@@ -9,7 +9,7 @@ import java.util.List;
  */
 public class SalidaDTO {
 
-    private Long idSalida;
+    private String idSalida;
     private String folio;
     private LocalDate fechaSalida;
     private String comentarios;
@@ -20,11 +20,11 @@ public class SalidaDTO {
     public SalidaDTO() {
     }
 
-    public Long getIdSalida() {
+    public String getIdSalida() {
         return idSalida;
     }
 
-    public void setIdSalida(Long idSalida) {
+    public void setIdSalida(String idSalida) {
         this.idSalida = idSalida;
     }
 

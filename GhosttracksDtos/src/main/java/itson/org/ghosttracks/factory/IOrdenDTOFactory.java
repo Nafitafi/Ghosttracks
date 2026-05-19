@@ -18,7 +18,7 @@ public interface IOrdenDTOFactory {
 
     NuevaOrdenDTO crearNuevaOrden(ProveedorDTO proveedor, SucursalDTO sucursal, List<ProductoOrdenDTO> productos, String comentarios, LocalDate fechaEstimada, TipoOrdenDTO tipoOrden);
     
-    OrdenDTO crearOrdenLectura(Long idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total, 
+    OrdenDTO crearOrdenLectura(String idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total, 
                                LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrdenDTO estadoOrden, 
                                List<ProductoOrdenDTO> productosOrden, Byte[] imagenRecepcion, ProveedorDTO proveedor, SucursalDTO sucursal);
 }

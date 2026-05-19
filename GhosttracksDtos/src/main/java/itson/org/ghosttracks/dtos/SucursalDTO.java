@@ -6,7 +6,7 @@ package itson.org.ghosttracks.dtos;
  */
 public class SucursalDTO {
     
-    private Long idSucursal;
+    private String idSucursal;
     
     private DireccionSucursalDTO direccion;
     private String telefono;
@@ -22,18 +22,18 @@ public class SucursalDTO {
         this.nombre = nombre;
     }
 
-    public SucursalDTO(Long idSucursal, DireccionSucursalDTO direccion, String telefono, String nombre) {
+    public SucursalDTO(String idSucursal, DireccionSucursalDTO direccion, String telefono, String nombre) {
         this.idSucursal = idSucursal;
         this.direccion = direccion;
         this.telefono = telefono;
         this.nombre = nombre;
     }
 
-    public Long getIdSucursal() {
+    public String getIdSucursal() {
         return idSucursal;
     }
 
-    public void setIdSucursal(Long idSucursal) {
+    public void setIdSucursal(String idSucursal) {
         this.idSucursal = idSucursal;
     }
 

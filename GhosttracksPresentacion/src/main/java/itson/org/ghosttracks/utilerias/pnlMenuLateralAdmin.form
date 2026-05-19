@@ -46,13 +46,15 @@
           <Group type="102" alignment="1" attributes="0">
               <EmptySpace min="0" pref="25" max="32767" attributes="0"/>
               <Group type="103" groupAlignment="1" attributes="0">
-                  <Component id="lblEntradas" min="-2" max="-2" attributes="0"/>
-                  <Component id="lblSalidas" min="-2" max="-2" attributes="0"/>
                   <Component id="btnAbastecimiento" min="-2" max="-2" attributes="0"/>
                   <Component id="btnPreventas" min="-2" max="-2" attributes="0"/>
                   <Component id="btnArticulos" min="-2" max="-2" attributes="0"/>
                   <Component id="btnInicio" min="-2" max="-2" attributes="0"/>
                   <Component id="btnVentas" min="-2" max="-2" attributes="0"/>
+                  <Group type="103" alignment="1" groupAlignment="0" max="-2" attributes="0">
+                      <Component id="lblSalidas" alignment="1" max="32767" attributes="0"/>
+                      <Component id="lblEntradas" alignment="1" max="32767" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace min="-2" pref="25" max="-2" attributes="0"/>
           </Group>
@@ -77,11 +79,11 @@
               <Component id="lblAdminnistracion" min="-2" max="-2" attributes="0"/>
               <EmptySpace min="-2" pref="16" max="-2" attributes="0"/>
               <Component id="btnAbastecimiento" min="-2" max="-2" attributes="0"/>
-              <EmptySpace type="unrelated" max="-2" attributes="0"/>
-              <Component id="lblEntradas" min="-2" max="-2" attributes="0"/>
-              <EmptySpace min="-2" pref="20" max="-2" attributes="0"/>
-              <Component id="lblSalidas" min="-2" max="-2" attributes="0"/>
-              <EmptySpace pref="109" max="32767" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblEntradas" min="-2" pref="51" max="-2" attributes="0"/>
+              <EmptySpace max="-2" attributes="0"/>
+              <Component id="lblSalidas" min="-2" pref="44" max="-2" attributes="0"/>
+              <EmptySpace pref="80" max="32767" attributes="0"/>
               <Component id="btnCerrarSesion" min="-2" max="-2" attributes="0"/>
               <EmptySpace max="-2" attributes="0"/>
           </Group>
@@ -237,6 +239,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Salidas"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblSalidasMouseClicked"/>
+      </Events>
     </Component>
     <Component class="javax.swing.JLabel" name="lblEntradas">
       <Properties>
@@ -245,6 +250,9 @@
         </Property>
         <Property name="text" type="java.lang.String" value="Entradas"/>
       </Properties>
+      <Events>
+        <EventHandler event="mouseClicked" listener="java.awt.event.MouseListener" parameters="java.awt.event.MouseEvent" handler="lblEntradasMouseClicked"/>
+      </Events>
     </Component>
   </SubComponents>
 </Form>

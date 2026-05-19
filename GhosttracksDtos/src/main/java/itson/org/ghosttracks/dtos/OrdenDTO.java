@@ -15,7 +15,7 @@ import java.util.List;
  * @author nafbr
  */
 public class OrdenDTO {
-    private Long idOrden;
+    private String idOrden;
     private String folio;
     private TipoOrdenDTO tipoOrden;
     private String comentarios;
@@ -31,7 +31,7 @@ public class OrdenDTO {
     public OrdenDTO() {
     }
 
-    public OrdenDTO(Long idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total,
+    public OrdenDTO(String idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total,
             LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrdenDTO estadoOrden,
             List<ProductoOrdenDTO> productosOrden, Byte[] imagenRecepcion,
             ProveedorDTO proveedor, SucursalDTO sucursal) {
@@ -51,11 +51,11 @@ public class OrdenDTO {
 
     
     
-    public Long getIdOrden() {
+    public String getIdOrden() {
         return idOrden;
     }
 
-    public void setIdOrden(Long idOrden) {
+    public void setIdOrden(String idOrden) {
         this.idOrden = idOrden;
     }
 

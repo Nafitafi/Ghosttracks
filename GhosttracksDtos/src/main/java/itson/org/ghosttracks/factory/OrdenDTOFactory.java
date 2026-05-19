@@ -29,7 +29,7 @@ public class OrdenDTOFactory implements IOrdenDTOFactory {
     }
 
     @Override
-    public OrdenDTO crearOrdenLectura(Long idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total,
+    public OrdenDTO crearOrdenLectura(String idOrden, String folio, TipoOrdenDTO tipoOrden, String comentarios, Double total,
             LocalDate fechaEntregaEst, LocalDateTime fechaSolicitud, EstadoOrdenDTO estadoOrden,
             List<ProductoOrdenDTO> productosOrden, Byte[] imagenRecepcion, ProveedorDTO proveedor, SucursalDTO sucursal) {
 
