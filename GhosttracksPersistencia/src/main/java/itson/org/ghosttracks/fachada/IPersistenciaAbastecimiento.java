@@ -19,7 +19,7 @@ import java.util.List;
  */
 public interface IPersistenciaAbastecimiento {
 
-    Orden insertarOrden(Orden orden) throws PersistenciaException;
+        Orden insertarOrden(Orden orden) throws PersistenciaException;
 
     Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException;
 
@@ -36,6 +36,8 @@ public interface IPersistenciaAbastecimiento {
     List<Producto> obtenerProductos() throws PersistenciaException;
 
     Producto obtenerProductoPorId(String idProducto) throws PersistenciaException;
+
+    Producto incrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException;
 
     Salida guardarSalida(Salida salida) throws PersistenciaException;
 

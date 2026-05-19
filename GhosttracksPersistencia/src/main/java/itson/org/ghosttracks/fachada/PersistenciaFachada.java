@@ -94,4 +94,9 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
     public List<Salida> obtenerSalidas() throws PersistenciaException {
         return salidasDAO.obtenerTodos();
     }
+
+    @Override
+    public Producto incrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException {
+        return productosDAO.incrementarStock(idProducto, cantidad);
+    }
 }

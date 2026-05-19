@@ -4,15 +4,20 @@ import itson.org.ghosttracks.controladores.ControlAbastecimiento;
 import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
+import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.DefaultCellEditor;
+import javax.swing.JCheckBox;
 import javax.swing.JFileChooser;
 import javax.swing.JOptionPane;
+import javax.swing.SwingConstants;
 import javax.swing.filechooser.FileNameExtensionFilter;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellRenderer;
 
 /**
  *
@@ -24,9 +29,10 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
     private OrdenDTO orden;
     private byte[] imagenRecepcion;
     private final List<ProductoOrdenDTO> productosOrden = new ArrayList<>();
-    
+
     public PantallaConfirmacionRecepcion() {
         initComponents();
+        configurarTablaProductosOrden();
     }
 
     public void setControlador(ControlAbastecimiento controlador) {
@@ -35,6 +41,7 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
 
     public void cargarOrden(OrdenDTO orden) {
         this.orden = orden;
+        this.imagenRecepcion = null;
         this.productosOrden.clear();
         if (orden == null) {
             return;
@@ -63,12 +70,74 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
                 });
             }
         }
+        configurarEstadoConfirmacion();
     }
 
     private String texto(String valor) {
         return valor != null && !valor.isBlank() ? valor : "NA";
     }
+
+    private void configurarTablaProductosOrden() {
+        tblProductosOrden.setModel(new DefaultTableModel(
+                new Object[][]{},
+                new String[]{"Id", "Producto", "Cantidad", "Total", "Recibido"}) {
+            private final Class<?>[] tipos = new Class<?>[]{
+                String.class, String.class, Integer.class, String.class, Boolean.class
+            };
+            private final boolean[] editable = new boolean[]{
+                false, false, false, false, true
+            };
+
+            @Override
+            public Class<?> getColumnClass(int columnIndex) {
+                return tipos[columnIndex];
+            }
+
+            @Override
+            public boolean isCellEditable(int rowIndex, int columnIndex) {
+                return editable[columnIndex];
+            }
+        });
+
+        JCheckBox editorCheckBox = new JCheckBox();
+        editorCheckBox.setHorizontalAlignment(SwingConstants.CENTER);
+        tblProductosOrden.getColumnModel().getColumn(4).setCellEditor(new DefaultCellEditor(editorCheckBox));
+        tblProductosOrden.getColumnModel().getColumn(4).setCellRenderer(checkboxRenderer());
+    }
+
+    private TableCellRenderer checkboxRenderer() {
+        return (table, value, isSelected, hasFocus, row, column) -> {
+            JCheckBox checkBox = new JCheckBox();
+            checkBox.setHorizontalAlignment(SwingConstants.CENTER);
+            checkBox.setSelected(Boolean.TRUE.equals(value));
+            checkBox.setOpaque(true);
+            checkBox.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return checkBox;
+        };
+    }
     
+    private void configurarEstadoConfirmacion() {
+        boolean puedeConfirmar = puedeConfirmarRecepcion();
+        btnAgregarImagen.setText("Agregar imagen de recepcion");
+        btnAgregarImagen.setEnabled(puedeConfirmar);
+        btnConfirmarRecepcion.setEnabled(puedeConfirmar);
+        tblProductosOrden.setEnabled(puedeConfirmar);
+        if (!puedeConfirmar) {
+            btnConfirmarRecepcion.setToolTipText("La orden ya fue recibida, cerrada o cancelada.");
+        } else {
+            btnConfirmarRecepcion.setToolTipText(null);
+        }
+    }
+
+    private boolean puedeConfirmarRecepcion() {
+        if (orden == null || orden.getEstadoOrden() == null) {
+            return false;
+        }
+        return orden.getEstadoOrden() != EstadoOrdenDTO.RECIBIDO
+                && orden.getEstadoOrden() != EstadoOrdenDTO.CERRADO
+                && orden.getEstadoOrden() != EstadoOrdenDTO.CANCELADO;
+    }
+
     private List<ProductoOrdenDTO> leerProductosRecibidos() {
         DefaultTableModel modelo = (DefaultTableModel) tblProductosOrden.getModel();
         for (int i = 0; i < modelo.getRowCount() && i < productosOrden.size(); i++) {
@@ -76,7 +145,7 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
         }
         return new ArrayList<>(productosOrden);
     }
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {

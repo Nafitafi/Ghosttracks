@@ -15,6 +15,7 @@
         <module>GhosttracksAbastecimiento</module>
         <module>SistemaStripeAPI</module>
         <module>SistemaSkydropxAPI</module>
+        <module>Infraestructura</module>
     </modules>
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>

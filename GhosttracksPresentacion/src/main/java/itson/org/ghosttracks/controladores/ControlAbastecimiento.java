@@ -135,14 +135,24 @@ public class ControlAbastecimiento {
     }
 
     public void confirmarOrden(OrdenDTO orden, PantallaOrdenesProveedores vista) {
-        if (orden != null) {
-            navegador.irConfirmacionRecepcion(orden);
+        if (orden == null) {
+            navegador.mostrarMensaje("No hay una orden seleccionada.", true);
+            return;
         }
+        if (!puedeConfirmarRecepcion(orden)) {
+            navegador.mostrarMensaje("Esta orden ya no puede confirmar recepcion.", true);
+            return;
+        }
+        navegador.irConfirmacionRecepcion(orden);
     }
 
     public void confirmarRecepcionOrden(OrdenDTO orden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) {
         if (orden == null) {
             navegador.mostrarMensaje("No hay una orden seleccionada.", true);
+            return;
+        }
+        if (!puedeConfirmarRecepcion(orden)) {
+            navegador.mostrarMensaje("Esta orden ya no puede confirmar recepcion.", true);
             return;
         }
         try {
@@ -259,6 +269,12 @@ public class ControlAbastecimiento {
             return false;
         }
         return fechaEnRango(salida.getFechaSalida(), inicio, fin);
+    }
+
+    private boolean puedeConfirmarRecepcion(OrdenDTO orden) {
+        return orden.getEstadoOrden() != EstadoOrdenDTO.RECIBIDO
+                && orden.getEstadoOrden() != EstadoOrdenDTO.CERRADO
+                && orden.getEstadoOrden() != EstadoOrdenDTO.CANCELADO;
     }
 
     private boolean fechaEnRango(LocalDate fecha, LocalDate inicio, LocalDate fin) {

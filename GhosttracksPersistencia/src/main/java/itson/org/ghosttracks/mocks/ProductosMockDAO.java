@@ -181,4 +181,14 @@ public class ProductosMockDAO implements IProductosDAO {
             throw new PersistenciaException("No se pudo guardar el producto debido a un error interno.", e);
         }
     }
+    
+    @Override
+    public Producto incrementarStock(String idProducto, int cantidad) throws PersistenciaException {
+        if (cantidad <= 0) {
+            throw new PersistenciaException("La cantidad a incrementar debe ser mayor a cero.");
+        }
+        Producto producto = buscarPorId(idProducto);
+        producto.setStock((producto.getStock() != null ? producto.getStock() : 0) + cantidad);
+        return producto;
+    }
 }

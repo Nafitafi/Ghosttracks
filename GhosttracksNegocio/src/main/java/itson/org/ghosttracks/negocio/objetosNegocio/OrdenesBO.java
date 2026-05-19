@@ -22,6 +22,8 @@ import itson.org.ghosttracks.factory.OrdenDTOFactory;
 import itson.org.ghosttracks.negocio.interfaces.IOrdenesBO;
 import itson.org.ghosttracks.negocio.mappers.OrdenMapper;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
+import itson.org.infraestructura.ComunicacionProveedor;
+import itson.org.infraestructura.IComunicacionProveedor;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
@@ -37,10 +39,12 @@ public class OrdenesBO implements IOrdenesBO {
 
     private final IPersistenciaAbastecimiento persistencia;
     private final IOrdenDTOFactory ordenFactory;
+    private final IComunicacionProveedor comunicacionProveedor;
 
     public OrdenesBO() {
         this.persistencia = new PersistenciaFachada();
         this.ordenFactory = new OrdenDTOFactory();
+        this.comunicacionProveedor = new ComunicacionProveedor();
     }
 
     @Override
@@ -79,9 +83,17 @@ public class OrdenesBO implements IOrdenesBO {
         Orden orden = OrdenMapper.toEntidad(dto, generarFolio());
         try {
             Orden guardada = persistencia.insertarOrden(orden);
-            return OrdenMapper.toDTO(guardada, ordenFactory);
+            OrdenDTO ordenRegistrada = OrdenMapper.toDTO(guardada, ordenFactory);
+            notificarProveedor(ordenRegistrada);
+            return ordenRegistrada;
         } catch (PersistenciaException ex) {
             throw new NegocioException("No se pudo guardar la orden: " + ex.getMessage(), ex);
+        }
+    }
+
+    private void notificarProveedor(OrdenDTO orden) throws NegocioException {
+        if (!comunicacionProveedor.notificar(orden)) {
+            throw new NegocioException("La orden se guardo, pero no se pudo notificar al proveedor.");
         }
     }
 

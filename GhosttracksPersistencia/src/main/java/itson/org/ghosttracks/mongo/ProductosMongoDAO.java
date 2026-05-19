@@ -5,6 +5,7 @@
 package itson.org.ghosttracks.mongo;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Updates;
 import itson.org.ghosttracks.daos.IProductosDAO;
 import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.entidades.Producto;
@@ -19,7 +20,7 @@ import org.bson.Document;
  *
  * @author nafbr
  */
-public class ProductosMongoDAO implements IProductosDAO{
+public class ProductosMongoDAO implements IProductosDAO {
 
     private final MongoCollection<Document> coleccion;
 
@@ -51,6 +52,20 @@ public class ProductosMongoDAO implements IProductosDAO{
                 productoDTO.getTipoProducto(), productoDTO.getArtista(), productoDTO.getGenero(),
                 productoDTO.getSetlist(), productoDTO.getPrecio(), productoDTO.getStock(), productoDTO.getEstado());
         coleccion.insertOne(ProductoMongoMapper.toDocument(producto));
+        return producto;
+    }
+
+    @Override
+    public Producto incrementarStock(String idProducto, int cantidad) throws PersistenciaException {
+        if (idProducto == null || idProducto.isBlank()) {
+            throw new PersistenciaException("El ID del producto es obligatorio para incrementar stock.");
+        }
+        if (cantidad <= 0) {
+            throw new PersistenciaException("La cantidad a incrementar debe ser mayor a cero.");
+        }
+        Producto producto = buscarPorId(idProducto);
+        coleccion.updateOne(MongoDocumentoMapper.filtroPorId(idProducto), Updates.inc("stock_actual", cantidad));
+        producto.setStock((producto.getStock() != null ? producto.getStock() : 0) + cantidad);
         return producto;
     }
 }
