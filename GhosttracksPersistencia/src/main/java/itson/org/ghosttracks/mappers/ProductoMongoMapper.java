@@ -39,7 +39,7 @@ public class ProductoMongoMapper {
         producto.setNombre(doc.getString("nombre"));
         producto.setImgProducto(doc.getString("imagen"));
         producto.setStock(doc.getInteger("stock_actual"));
-        producto.setPrecio(doc.getDouble("precio_base"));
+        producto.setPrecio(MongoDocumentoMapper.documentoADouble(doc.get("precio_base")));
         TipoProducto tipo = MongoDocumentoMapper.enumValue(TipoProducto.class, doc.getString("tipo"));
         EstadoProducto estado = MongoDocumentoMapper.enumValue(EstadoProducto.class, doc.getString("estado"));
         producto.setTipo(tipo != null ? tipo : TipoProducto.VINILO);

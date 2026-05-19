@@ -17,6 +17,7 @@ import org.bson.Document;
  */
 public class OrdenMongoMapper {
 
+
     public static Document toDocument(Orden orden) {
         String id = MongoDocumentoMapper.idParaGuardar(orden.getIdOrden());
         orden.setIdOrden(id);
@@ -50,7 +51,7 @@ public class OrdenMongoMapper {
         orden.setTipoOrden(MongoDocumentoMapper.enumValue(TipoOrden.class, doc.getString("tipo_orden")));
         orden.setComentarios(doc.getString("comentarios"));
         orden.setEstado(MongoDocumentoMapper.enumValue(EstadoOrden.class, doc.getString("estado")));
-        orden.setTotal(doc.getDouble("total_orden"));
+        orden.setTotal(MongoDocumentoMapper.documentoADouble(doc.get("total_orden")));
         orden.setProveedor(documentoAProveedorRef(doc.get("proveedor", Document.class)));
         orden.setSucursal(documentoASucursalRef(doc.get("sucursal", Document.class)));
         orden.setProductosOrden(ProductoOrdenMongoMapper.toEntityList(doc.getList("detalles_productos", Document.class)));

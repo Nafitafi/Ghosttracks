@@ -34,12 +34,22 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
     private List<ProductoDTO> productosDisponibles = new ArrayList<>();
     private final List<ProductoOrdenDTO> productosOrden = new ArrayList<>();
     private ProductoDTO productoSeleccionado;
-    
+
     public PantallaNuevaOrdenProveedor() {
         initComponents();
+        prepararTabla();
+        dtpFecha.setDate(LocalDate.now().plusDays(10));
+        refrescarTablaProductos();
     }
+    
+    private void prepararTabla() {
+        EliminarProductoCell renderEditor = new EliminarProductoCell();
+        tblProductosOrden.getColumnModel().getColumn(4).setCellRenderer(renderEditor);
+        tblProductosOrden.getColumnModel().getColumn(4).setCellEditor(renderEditor);
+    }
+    
 
-     public void setControlador(ControlAbastecimiento controlador) {
+    public void setControlador(ControlAbastecimiento controlador) {
         this.controlador = controlador;
         if (controlador != null) {
             controlador.inicializarFormularioNuevaOrden(this);
@@ -83,7 +93,7 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
         }
         cbxTipoOrden.setModel(modeloTipos);
     }
-    
+
     public void cargarProductosDisponibles(List<ProductoDTO> productos) {
         this.productosDisponibles = productos != null ? productos : new ArrayList<>();
     }
@@ -196,9 +206,7 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
         controlador.registrarOrdenNueva(this, (ProveedorDTO) proveedor, (SucursalDTO) sucursal, (TipoOrdenDTO) tipo,
                 fecha, txaComentarios.getText(), new ArrayList<>(productosOrden));
     }
-    
-    
-    
+
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -260,10 +268,7 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
 
         tblProductosOrden.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null},
-                {null, null, null, null, null}
+
             },
             new String [] {
                 "Id", "Producto", "Cantidad", "Total", "Acciones"
@@ -429,10 +434,16 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
         private int fila;
 
         EliminarProductoCell() {
+            boton.setFocusPainted(false);
+            boton.setOpaque(true);
+
             boton.addActionListener(e -> {
-                fireEditingStopped();
-                if (fila >= 0 && fila < productosOrden.size()) {
-                    productosOrden.remove(fila);
+                int filaModelo = tblProductosOrden.convertRowIndexToModel(fila);
+                
+                fireEditingCanceled(); 
+                
+                if (filaModelo >= 0 && filaModelo < productosOrden.size()) {
+                    productosOrden.remove(filaModelo);
                     refrescarTablaProductos();
                 }
             });
@@ -454,6 +465,7 @@ public class PantallaNuevaOrdenProveedor extends javax.swing.JPanel {
             return "Eliminar";
         }
     }
+
 
 
     // Variables declaration - do not modify//GEN-BEGIN:variables

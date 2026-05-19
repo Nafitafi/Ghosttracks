@@ -5,11 +5,17 @@ import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.dtos.ProductoSalidaDTO;
 import itson.org.ghosttracks.dtos.SucursalDTO;
 import itson.org.ghosttracks.enums.RazonSalidaDTO;
+import java.awt.Component;
 import java.util.ArrayList;
 import java.util.List;
+import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
 import javax.swing.JOptionPane;
+import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
 
 public class PantallaNuevaSalida extends javax.swing.JPanel {
 
@@ -21,6 +27,7 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
 
     public PantallaNuevaSalida() {
         initComponents();
+        prepararTabla();
     }
 
     public void setControlador(ControlAbastecimiento controlador) {
@@ -54,18 +61,45 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
 
     private void prepararTabla() {
         ((DefaultTableModel) tblProductos.getModel()).setRowCount(0);
-        tblProductos.addMouseListener(new java.awt.event.MouseAdapter() {
-            @Override
-            public void mouseClicked(java.awt.event.MouseEvent evt) {
-                int fila = tblProductos.rowAtPoint(evt.getPoint());
-                int columna = tblProductos.columnAtPoint(evt.getPoint());
-                if (fila >= 0 && columna == 3) {
-                    quitarProducto(fila);
-                }
-            }
-        });
+        EliminarProductoCell renderEditor = new EliminarProductoCell();
+        tblProductos.getColumnModel().getColumn(3).setCellRenderer(renderEditor);
+        tblProductos.getColumnModel().getColumn(3).setCellEditor(renderEditor);
     }
+    
+    
+    private class EliminarProductoCell extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
 
+        private final JButton boton = new JButton("Quitar");
+        private int fila;
+
+        EliminarProductoCell() {
+            boton.setFocusPainted(false);
+            boton.setOpaque(true);
+
+            boton.addActionListener(e -> {
+                int filaAEliminar = fila;
+                fireEditingCanceled(); 
+                
+                quitarProducto(filaAEliminar);
+            });
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            return boton;
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            this.fila = row;
+            return boton;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return "Quitar";
+        }
+    }
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -122,10 +156,7 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
 
         tblProductos.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null},
-                {null, null, null, null}
+
             },
             new String [] {
                 "id", "Producto", "Cantidad", "Acciones"
@@ -309,9 +340,10 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
         }
     }//GEN-LAST:event_btnBuscarProductoActionPerformed
 
-    private void quitarProducto(int fila) {
-        if (fila >= 0 && fila < productosSalida.size()) {
-            productosSalida.remove(fila);
+    private void quitarProducto(int filaVista) {
+        int filaModelo = tblProductos.convertRowIndexToModel(filaVista);
+        if (filaModelo >= 0 && filaModelo < productosSalida.size()) {
+            productosSalida.remove(filaModelo);
             recargarTablaProductos();
         }
     }

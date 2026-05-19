@@ -51,6 +51,19 @@ public class MongoDocumentoMapper {
         return valor == null ? null : valor.name();
     }
 
+    public static Double documentoADouble(Object valor) {
+        if (valor == null) {
+            return null;
+        }
+        if (valor instanceof Number numero) {
+            return numero.doubleValue();
+        }
+        if (valor instanceof String texto && !texto.isBlank()) {
+            return Double.valueOf(texto);
+        }
+        return null;
+    }
+
     public static byte[] documentoABytes(Object valor) {
         if (valor instanceof byte[] bytes) {
             return bytes;
@@ -65,19 +78,19 @@ public class MongoDocumentoMapper {
         return valor == null ? null : Enum.valueOf(tipo, valor);
     }
 
-    static Date fechaADate(LocalDate fecha) {
+    public static Date fechaADate(LocalDate fecha) {
         return fecha == null ? null : Date.from(fecha.atStartOfDay(ZoneId.systemDefault()).toInstant());
     }
 
-    static Date fechaHoraADate(LocalDateTime fecha) {
+    public static Date fechaHoraADate(LocalDateTime fecha) {
         return fecha == null ? null : Date.from(fecha.atZone(ZoneId.systemDefault()).toInstant());
     }
 
-    static LocalDate dateALocalDate(Date fecha) {
+    public static LocalDate dateALocalDate(Date fecha) {
         return fecha == null ? null : fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
     }
 
-    static LocalDateTime dateALocalDateTime(Date fecha) {
+    public static LocalDateTime dateALocalDateTime(Date fecha) {
         return fecha == null ? null : fecha.toInstant().atZone(ZoneId.systemDefault()).toLocalDateTime();
     }
 }

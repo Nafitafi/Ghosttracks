@@ -35,8 +35,8 @@ public class ProductoOrdenMongoMapper {
         producto.setIdProducto(MongoDocumentoMapper.documentoAId(doc.get("id_producto")));
         producto.setNombreProducto(doc.getString("nombre_producto"));
         producto.setCantidadProducto(doc.getInteger("cantidad"));
-        producto.setPrecioUnitario(doc.getDouble("precio_unitario"));
-        producto.setImporteTotal(doc.getDouble("subtotal"));
+        producto.setPrecioUnitario(MongoDocumentoMapper.documentoADouble(doc.get("precio_unitario")));
+        producto.setImporteTotal(MongoDocumentoMapper.documentoADouble(doc.get("subtotal")));
         producto.setRecibido(doc.getBoolean("recibido", false));
         return producto;
     }

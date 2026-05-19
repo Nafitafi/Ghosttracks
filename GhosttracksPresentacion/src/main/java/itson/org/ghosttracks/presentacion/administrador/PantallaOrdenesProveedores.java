@@ -265,7 +265,7 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
 
     private void btnAgregarOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarOrdenActionPerformed
        if (controlador != null) {
-            controlador.exportarReporteAgrupado(tblOrdenes, "Ordenes a proveedores", obtenerFiltrosReporte());
+            controlador.irAAgregarOrdenNueva();
         }
     }//GEN-LAST:event_btnAgregarOrdenActionPerformed
 
