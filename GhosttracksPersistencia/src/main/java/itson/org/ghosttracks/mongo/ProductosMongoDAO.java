@@ -68,4 +68,23 @@ public class ProductosMongoDAO implements IProductosDAO {
         producto.setStock((producto.getStock() != null ? producto.getStock() : 0) + cantidad);
         return producto;
     }
+    
+    @Override
+    public Producto decrementarStock(String idProducto, int cantidad) throws PersistenciaException {
+        if (idProducto == null || idProducto.isBlank()) {
+            throw new PersistenciaException("El ID del producto es obligatorio para decrementar stock.");
+        }
+        if (cantidad <= 0) {
+            throw new PersistenciaException("La cantidad a decrementar debe ser mayor a cero.");
+        }
+        Producto producto = buscarPorId(idProducto);
+        int stockActual = producto.getStock() != null ? producto.getStock() : 0;
+        if (stockActual < cantidad) {
+            throw new PersistenciaException("Stock insuficiente para el producto: " + producto.getNombre());
+        }
+        coleccion.updateOne(MongoDocumentoMapper.filtroPorId(idProducto), Updates.inc("stock_actual", -cantidad));
+        producto.setStock(stockActual - cantidad);
+        return producto;
+    }
+    
 }

@@ -4,6 +4,7 @@
  */
 package itson.org.ghosttracks.negocio.interfaces;
 
+import itson.org.ghosttracks.dtos.FiltroSalidaDTO;
 import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.SalidaDTO;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
@@ -18,4 +19,6 @@ public interface ISalidasBO {
     SalidaDTO registrarSalida(NuevaSalidaDTO dto) throws NegocioException;
 
     List<SalidaDTO> obtenerSalidas() throws NegocioException;
+    
+    List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws NegocioException;
 }

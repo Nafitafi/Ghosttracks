@@ -59,17 +59,19 @@ public class ReportePdfExporter {
         try (FileOutputStream salida = new FileOutputStream(destino)) {
             PdfWriter.getInstance(documento, salida);
             documento.open();
-            documento.add(new Paragraph(titulo, FUENTE_TITULO));
-            documento.add(new Paragraph("Fecha de generación: " + fechaReporteEnEspanol(), FUENTE_TEXTO));
-            if (incluirFiltros) {
-                documento.add(new Paragraph("Filtros aplicados: " + filtrosTexto(filtros), FUENTE_TEXTO));
-            }
-            documento.add(Chunk.NEWLINE);
-            documento.add(crearTablaPdf(tabla, columnasVisibles));
-            return true;
-        } finally {
-            if (documento.isOpen()) {
-                documento.close();
+            try {
+                documento.add(new Paragraph(titulo, FUENTE_TITULO));
+                documento.add(new Paragraph("Fecha de generación: " + fechaReporteEnEspanol(), FUENTE_TEXTO));
+                if (incluirFiltros) {
+                    documento.add(new Paragraph("Filtros aplicados: " + filtrosTexto(filtros), FUENTE_TEXTO));
+                }
+                documento.add(Chunk.NEWLINE);
+                documento.add(crearTablaPdf(tabla, columnasVisibles));
+                return true;
+            } finally {
+                if (documento.isOpen()) {
+                    documento.close();
+                }
             }
         }
     }

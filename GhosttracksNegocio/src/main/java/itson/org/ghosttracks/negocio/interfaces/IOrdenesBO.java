@@ -4,6 +4,7 @@
  */
 package itson.org.ghosttracks.negocio.interfaces;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenDTO;
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
@@ -46,6 +47,8 @@ public interface IOrdenesBO {
     void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException;
 
     List<OrdenDTO> obtenerOrdenes() throws NegocioException;
+
+    List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws NegocioException;
 
     OrdenDTO obtenerOrdenPorId(String idOrden) throws NegocioException;
 

@@ -5,6 +5,7 @@
 package itson.org.ghosttracks.mocks;
 
 import itson.org.ghosttracks.daos.IOrdenesDAO;
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.entidades.ProveedorRef;
 import itson.org.ghosttracks.entidades.SucursalRef;
@@ -110,5 +111,33 @@ public class OrdenesMockDAO implements IOrdenesDAO {
             }
         }
         throw new PersistenciaException("Orden no encontrada con el ID: " + orden.getIdOrden());
+    }
+    
+    @Override
+    public List<Orden> obtenerPorFiltro(FiltroOrdenPersistenciaDTO filtro) throws PersistenciaException {
+        if (filtro == null) {
+            return obtenerTodos();
+        }
+        return ordenesDB.stream()
+                .filter(orden -> coincideFiltro(orden, filtro))
+                .toList();
+    }
+    
+    private boolean coincideFiltro(Orden orden, FiltroOrdenPersistenciaDTO filtro) {
+        if (filtro.getIdProveedor() != null && !filtro.getIdProveedor().isBlank()
+                && (orden.getProveedor() == null || !filtro.getIdProveedor().equals(orden.getProveedor().getIdProveedor()))) {
+            return false;
+        }
+        if (filtro.getEstado() != null && (orden.getEstado() == null || !filtro.getEstado().name().equals(orden.getEstado().name()))) {
+            return false;
+        }
+        if (filtro.getTipoOrden() != null && (orden.getTipoOrden() == null || !filtro.getTipoOrden().name().equals(orden.getTipoOrden().name()))) {
+            return false;
+        }
+        LocalDate fecha = orden.getFechaEntregaEstimada();
+        if (filtro.getFechaInicio() != null && (fecha == null || fecha.isBefore(filtro.getFechaInicio()))) {
+            return false;
+        }
+        return filtro.getFechaFin() == null || (fecha != null && !fecha.isAfter(filtro.getFechaFin()));
     }
 }

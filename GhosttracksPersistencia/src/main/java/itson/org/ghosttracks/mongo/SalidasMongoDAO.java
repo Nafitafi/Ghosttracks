@@ -5,7 +5,9 @@
 package itson.org.ghosttracks.mongo;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import itson.org.ghosttracks.daos.ISalidasDAO;
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Salida;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import itson.org.ghosttracks.mappers.MongoDocumentoMapper;
@@ -14,6 +16,7 @@ import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -58,5 +61,33 @@ public class SalidasMongoDAO implements ISalidasDAO{
             throw new PersistenciaException("Salida no encontrada con el ID: " + idSalida);
         }
         return salida;
+    }
+    
+    
+    @Override
+    public List<Salida> obtenerPorFiltro(FiltroSalidaPersistenciaDTO filtro) {
+        Bson consulta = construirFiltro(filtro);
+        List<Salida> salidas = new ArrayList<>();
+        for (Document doc : coleccion.find(consulta)) {
+            salidas.add(SalidaMongoMapper.toEntity(doc));
+        }
+        return salidas;
+    }
+    
+    private Bson construirFiltro(FiltroSalidaPersistenciaDTO filtro) {
+        if (filtro == null) {
+            return new Document();
+        }
+        List<Bson> condiciones = new ArrayList<>();
+        if (filtro.getRazon() != null) {
+            condiciones.add(Filters.eq("razon_salida", filtro.getRazon().name()));
+        }
+        if (filtro.getFechaInicio() != null) {
+            condiciones.add(Filters.gte("fecha_salida", MongoDocumentoMapper.fechaADate(filtro.getFechaInicio())));
+        }
+        if (filtro.getFechaFin() != null) {
+            condiciones.add(Filters.lte("fecha_salida", MongoDocumentoMapper.fechaADate(filtro.getFechaFin())));
+        }
+        return condiciones.isEmpty() ? new Document() : Filters.and(condiciones);
     }
 }

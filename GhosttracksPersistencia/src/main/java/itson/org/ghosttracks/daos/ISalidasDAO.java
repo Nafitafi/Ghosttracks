@@ -4,6 +4,7 @@
  */
 package itson.org.ghosttracks.daos;
 
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Salida;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import java.util.List;
@@ -18,5 +19,8 @@ public interface ISalidasDAO {
 
     List<Salida> obtenerTodos() throws PersistenciaException;
 
+    List<Salida> obtenerPorFiltro(FiltroSalidaPersistenciaDTO filtro) throws PersistenciaException;
+
     Salida obtenerPorId(String idSalida) throws PersistenciaException;
+    
 }

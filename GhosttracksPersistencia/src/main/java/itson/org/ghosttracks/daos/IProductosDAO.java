@@ -18,4 +18,6 @@ public interface IProductosDAO {
     public abstract Producto agregar(ProductoDTO producto) throws PersistenciaException;
     
     public abstract Producto incrementarStock(String idProducto, int cantidad) throws PersistenciaException;
+    
+    public abstract Producto decrementarStock(String idProducto, int cantidad) throws PersistenciaException;
 }

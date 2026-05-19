@@ -4,6 +4,8 @@
  */
 package itson.org.ghosttracksabastecimiento.fachada;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaDTO;
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
@@ -22,7 +24,9 @@ import java.util.List;
  */
 public interface IAbastecimiento {
 
-        List<OrdenDTO> obtenerTodasLasOrdenes() throws AbastecimientoException;
+    List<OrdenDTO> obtenerTodasLasOrdenes() throws AbastecimientoException;
+
+    List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws AbastecimientoException;
 
     OrdenDTO obtenerOrdenPorId(String idOrden) throws AbastecimientoException;
 
@@ -31,7 +35,7 @@ public interface IAbastecimiento {
     void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException;
 
     OrdenDTO confirmarRecepcionOrden(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws AbastecimientoException;
-    
+
     List<ProveedorDTO> obtenerTodosLosProveedores() throws AbastecimientoException;
 
     List<SucursalDTO> obtenerTodasLasSucursales() throws AbastecimientoException;
@@ -41,5 +45,7 @@ public interface IAbastecimiento {
     SalidaDTO registrarNuevaSalida(NuevaSalidaDTO dto) throws AbastecimientoException;
 
     List<SalidaDTO> obtenerTodasLasSalidas() throws AbastecimientoException;
+
+    List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws AbastecimientoException;
 
 }

@@ -9,6 +9,8 @@ import itson.org.ghosttracks.daos.IProductosDAO;
 import itson.org.ghosttracks.daos.IProveedoresDAO;
 import itson.org.ghosttracks.daos.ISalidasDAO;
 import itson.org.ghosttracks.daos.ISucursalesDAO;
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.entidades.Producto;
 import itson.org.ghosttracks.entidades.Proveedor;
@@ -98,5 +100,20 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
     @Override
     public Producto incrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException {
         return productosDAO.incrementarStock(idProducto, cantidad);
+    }
+
+    @Override
+    public List<Orden> obtenerOrdenes(FiltroOrdenPersistenciaDTO filtro) throws PersistenciaException {
+        return ordenesDAO.obtenerPorFiltro(filtro);
+    }
+    
+    @Override
+    public Producto decrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException {
+        return productosDAO.decrementarStock(idProducto, cantidad);
+    }
+
+    @Override
+    public List<Salida> obtenerSalidas(FiltroSalidaPersistenciaDTO filtro) throws PersistenciaException {
+        return salidasDAO.obtenerPorFiltro(filtro);
     }
 }

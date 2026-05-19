@@ -4,10 +4,15 @@
  */
 package itson.org.ghosttracks.negocio.objetosNegocio;
 
+import itson.org.ghosttracks.dtos.FiltroSalidaDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.ProductoSalidaDTO;
 import itson.org.ghosttracks.dtos.SalidaDTO;
+import itson.org.ghosttracks.entidades.Producto;
+import itson.org.ghosttracks.entidades.ProductoSalida;
 import itson.org.ghosttracks.entidades.Salida;
+import itson.org.ghosttracks.enums.RazonSalida;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import itson.org.ghosttracks.fachada.IPersistenciaAbastecimiento;
 import itson.org.ghosttracks.fachada.PersistenciaFachada;
@@ -34,6 +39,7 @@ public class SalidasBO implements ISalidasBO {
         validarSalida(dto);
         Salida salida = SalidaMapper.toEntidad(dto);
         try {
+            decrementarStockProductosSalida(salida.getProductosSalida());
             return SalidaMapper.toDTO(persistencia.guardarSalida(salida));
         } catch (PersistenciaException ex) {
             throw new NegocioException("No se pudo guardar la salida: " + ex.getMessage(), ex);
@@ -48,6 +54,17 @@ public class SalidasBO implements ISalidasBO {
                     .collect(Collectors.toList());
         } catch (PersistenciaException ex) {
             throw new NegocioException("No se pudieron obtener las salidas: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws NegocioException {
+        try {
+            return persistencia.obtenerSalidas(mapearFiltroPersistencia(filtro)).stream()
+                    .map(SalidaMapper::toDTO)
+                    .collect(Collectors.toList());
+        } catch (PersistenciaException ex) {
+            throw new NegocioException("No se pudieron obtener las salidas filtradas: " + ex.getMessage(), ex);
         }
     }
 
@@ -71,4 +88,34 @@ public class SalidasBO implements ISalidasBO {
         }
     }
 
+    private void decrementarStockProductosSalida(List<ProductoSalida> productosSalida) throws PersistenciaException {
+        if (productosSalida == null) {
+            return;
+        }
+        for (ProductoSalida productoSalida : productosSalida) {
+            Integer cantidad = productoSalida.getCantidad();
+            if (cantidad == null || cantidad <= 0) {
+                throw new PersistenciaException("La cantidad de salida debe ser mayor a cero.");
+            }
+            Producto producto = persistencia.obtenerProductoPorId(productoSalida.getIdProducto());
+            int stockActual = producto.getStock() != null ? producto.getStock() : 0;
+            if (stockActual < cantidad) {
+                throw new PersistenciaException("Stock insuficiente para el producto: " + producto.getNombre());
+            }
+        }
+        for (ProductoSalida productoSalida : productosSalida) {
+            persistencia.decrementarStockProducto(productoSalida.getIdProducto(), productoSalida.getCantidad());
+        }
+    }
+
+    private FiltroSalidaPersistenciaDTO mapearFiltroPersistencia(FiltroSalidaDTO filtro) {
+        if (filtro == null) {
+            return null;
+        }
+        FiltroSalidaPersistenciaDTO filtroPersistencia = new FiltroSalidaPersistenciaDTO();
+        filtroPersistencia.setRazon(filtro.getRazon() != null ? RazonSalida.valueOf(filtro.getRazon().name()) : null);
+        filtroPersistencia.setFechaInicio(filtro.getFechaInicio());
+        filtroPersistencia.setFechaFin(filtro.getFechaFin());
+        return filtroPersistencia;
+    }
 }

@@ -4,6 +4,7 @@
  */
 package itson.org.ghosttracks.daos;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.enums.EstadoOrden;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
@@ -22,6 +23,8 @@ public interface IOrdenesDAO {
     public abstract Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
 
     public abstract List<Orden> obtenerTodos() throws PersistenciaException;
+
+    public abstract List<Orden> obtenerPorFiltro(FiltroOrdenPersistenciaDTO filtro) throws PersistenciaException;
 
     public abstract Orden obtenerPorId(String id) throws PersistenciaException;
     

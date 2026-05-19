@@ -5,6 +5,7 @@
 package itson.org.ghosttracks.mocks;
 
 import itson.org.ghosttracks.daos.ISalidasDAO;
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Salida;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import java.util.List;
@@ -27,6 +28,11 @@ public class SalidasMockDAO implements ISalidasDAO{
 
     @Override
     public Salida obtenerPorId(String idSalida) throws PersistenciaException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
+
+    @Override
+    public List<Salida> obtenerPorFiltro(FiltroSalidaPersistenciaDTO filtro) throws PersistenciaException {
         throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
     }
     

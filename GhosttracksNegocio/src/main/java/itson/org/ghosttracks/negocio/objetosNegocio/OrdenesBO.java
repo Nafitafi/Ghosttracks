@@ -4,6 +4,8 @@
  */
 package itson.org.ghosttracks.negocio.objetosNegocio;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenDTO;
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
@@ -121,6 +123,17 @@ public class OrdenesBO implements IOrdenesBO {
     }
 
     @Override
+    public List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws NegocioException {
+        try {
+            return persistencia.obtenerOrdenes(mapearFiltroPersistencia(filtro)).stream()
+                    .map(orden -> OrdenMapper.toDTO(orden, ordenFactory))
+                    .collect(Collectors.toList());
+        } catch (PersistenciaException ex) {
+            throw new NegocioException("No se pudieron obtener las ordenes filtradas: " + ex.getMessage(), ex);
+        }
+    }
+
+    @Override
     public OrdenDTO obtenerOrdenPorId(String idOrden) throws NegocioException {
         try {
             return OrdenMapper.toDTO(persistencia.obtenerOrdenPorId(idOrden), ordenFactory);
@@ -142,10 +155,15 @@ public class OrdenesBO implements IOrdenesBO {
         }
         try {
             Orden orden = persistencia.obtenerOrdenPorId(idOrden);
+            if (orden.getEstado() == EstadoOrden.RECIBIDO || orden.getEstado() == EstadoOrden.CERRADO
+                    || orden.getEstado() == EstadoOrden.CANCELADO) {
+                throw new NegocioException("Esta orden ya no puede confirmar recepcion.");
+            }
             orden.setImagen(imagen);
             orden.setFechaEntrega(LocalDateTime.now());
             orden.setEstado(EstadoOrden.RECIBIDO);
             aplicarProductosRecibidos(orden.getProductosOrden(), productosRecibidos);
+            incrementarStockProductosRecibidos(orden.getProductosOrden());
             Orden actualizada = persistencia.actualizarOrden(orden);
             return OrdenMapper.toDTO(actualizada, ordenFactory);
         } catch (PersistenciaException ex) {
@@ -163,6 +181,21 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    private void incrementarStockProductosRecibidos(List<ProductoOrden> productosOrden) throws PersistenciaException {
+        if (productosOrden == null) {
+            return;
+        }
+        for (ProductoOrden productoOrden : productosOrden) {
+            if (productoOrden.getRecibido() != null && productoOrden.getRecibido()) {
+                Integer cantidad = productoOrden.getCantidadProducto();
+                if (cantidad == null || cantidad <= 0) {
+                    throw new PersistenciaException("La cantidad recibida debe ser mayor a cero.");
+                }
+                persistencia.incrementarStockProducto(productoOrden.getIdProducto(), cantidad);
+            }
+        }
+    }
+
     private String generarFolio() {
         return "GT-ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
     }
@@ -173,5 +206,18 @@ public class OrdenesBO implements IOrdenesBO {
         }
         LocalDateTime fechaSolicitud = dto.getFechaSolicitud() != null ? dto.getFechaSolicitud() : LocalDateTime.now();
         return fechaSolicitud.toLocalDate().plusDays(10);
+    }
+
+    private FiltroOrdenPersistenciaDTO mapearFiltroPersistencia(FiltroOrdenDTO filtro) {
+        if (filtro == null) {
+            return null;
+        }
+        FiltroOrdenPersistenciaDTO filtroPersistencia = new FiltroOrdenPersistenciaDTO();
+        filtroPersistencia.setIdProveedor(filtro.getIdProveedor());
+        filtroPersistencia.setEstado(filtro.getEstado() != null ? EstadoOrden.valueOf(filtro.getEstado().name()) : null);
+        filtroPersistencia.setTipoOrden(filtro.getTipoOrden() != null ? TipoOrden.valueOf(filtro.getTipoOrden().name()) : null);
+        filtroPersistencia.setFechaInicio(filtro.getFechaInicio());
+        filtroPersistencia.setFechaFin(filtro.getFechaFin());
+        return filtroPersistencia;
     }
 }

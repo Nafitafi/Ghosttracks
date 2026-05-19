@@ -5,8 +5,10 @@
 package itson.org.ghosttracks.mongo;
 
 import com.mongodb.client.MongoCollection;
+import com.mongodb.client.model.Filters;
 import com.mongodb.client.model.ReplaceOptions;
 import itson.org.ghosttracks.daos.IOrdenesDAO;
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.enums.EstadoOrden;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
@@ -15,6 +17,7 @@ import itson.org.ghosttracks.mappers.OrdenMongoMapper;
 import java.util.ArrayList;
 import java.util.List;
 import org.bson.Document;
+import org.bson.conversions.Bson;
 
 /**
  *
@@ -73,5 +76,38 @@ public class OrdenesMongoDAO implements IOrdenesDAO {
             throw new PersistenciaException("Orden no encontrada con el ID: " + id);
         }
         return orden;
+    }
+    
+    @Override
+    public List<Orden> obtenerPorFiltro(FiltroOrdenPersistenciaDTO filtro) {
+        Bson consulta = construirFiltro(filtro);
+        List<Orden> ordenes = new ArrayList<>();
+        for (Document doc : coleccion.find(consulta)) {
+            ordenes.add(OrdenMongoMapper.toEntity(doc));
+        }
+        return ordenes;
+    }
+    
+    private Bson construirFiltro(FiltroOrdenPersistenciaDTO filtro) {
+        if (filtro == null) {
+            return new Document();
+        }
+        List<Bson> condiciones = new ArrayList<>();
+        if (filtro.getIdProveedor() != null && !filtro.getIdProveedor().isBlank()) {
+            condiciones.add(Filters.eq("proveedor.id_proveedor", filtro.getIdProveedor()));
+        }
+        if (filtro.getEstado() != null) {
+            condiciones.add(Filters.eq("estado", filtro.getEstado().name()));
+        }
+        if (filtro.getTipoOrden() != null) {
+            condiciones.add(Filters.eq("tipo_orden", filtro.getTipoOrden().name()));
+        }
+        if (filtro.getFechaInicio() != null) {
+            condiciones.add(Filters.gte("fecha_entrega", MongoDocumentoMapper.fechaADate(filtro.getFechaInicio())));
+        }
+        if (filtro.getFechaFin() != null) {
+            condiciones.add(Filters.lte("fecha_entrega", MongoDocumentoMapper.fechaADate(filtro.getFechaFin())));
+        }
+        return condiciones.isEmpty() ? new Document() : Filters.and(condiciones);
     }
 }

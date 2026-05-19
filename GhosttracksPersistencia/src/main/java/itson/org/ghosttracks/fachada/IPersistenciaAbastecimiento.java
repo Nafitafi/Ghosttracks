@@ -4,6 +4,8 @@
  */
 package itson.org.ghosttracks.fachada;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenPersistenciaDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaPersistenciaDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.entidades.Producto;
 import itson.org.ghosttracks.entidades.Proveedor;
@@ -19,13 +21,15 @@ import java.util.List;
  */
 public interface IPersistenciaAbastecimiento {
 
-        Orden insertarOrden(Orden orden) throws PersistenciaException;
+    Orden insertarOrden(Orden orden) throws PersistenciaException;
 
     Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException;
 
     Orden actualizarOrden(Orden orden) throws PersistenciaException;
 
     List<Orden> obtenerOrdenes() throws PersistenciaException;
+
+    List<Orden> obtenerOrdenes(FiltroOrdenPersistenciaDTO filtro) throws PersistenciaException;
 
     Orden obtenerOrdenPorId(String id) throws PersistenciaException;
 
@@ -39,7 +43,11 @@ public interface IPersistenciaAbastecimiento {
 
     Producto incrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException;
 
+    Producto decrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException;
+    
     Salida guardarSalida(Salida salida) throws PersistenciaException;
 
     List<Salida> obtenerSalidas() throws PersistenciaException;
+
+    List<Salida> obtenerSalidas(FiltroSalidaPersistenciaDTO filtro) throws PersistenciaException;
 }

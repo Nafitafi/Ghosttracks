@@ -4,6 +4,8 @@
  */
 package itson.org.ghosttracksabastecimiento.fachada;
 
+import itson.org.ghosttracks.dtos.FiltroOrdenDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaDTO;
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
@@ -54,6 +56,15 @@ public class AbastecimientoFachada implements IAbastecimiento {
             return ordenesBO.obtenerOrdenes();
         } catch (NegocioException ex) {
             throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener órdenes.", ex);
+        }
+    }
+
+    @Override
+    public List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws AbastecimientoException {
+        try {
+            return ordenesBO.obtenerOrdenes(filtro);
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener ordenes filtradas.", ex);
         }
     }
 
@@ -138,6 +149,15 @@ public class AbastecimientoFachada implements IAbastecimiento {
             return salidasBO.obtenerSalidas();
         } catch (NegocioException ex) {
             throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener salidas.", ex);
+        }
+    }
+
+    @Override
+    public List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws AbastecimientoException {
+        try {
+            return salidasBO.obtenerSalidas(filtro);
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener salidas filtradas.", ex);
         }
     }
 }

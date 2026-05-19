@@ -11,6 +11,8 @@ import com.itextpdf.text.FontFactory;
 import com.itextpdf.text.PageSize;
 import com.itextpdf.text.Paragraph;
 import com.itextpdf.text.pdf.PdfWriter;
+import itson.org.ghosttracks.dtos.FiltroOrdenDTO;
+import itson.org.ghosttracks.dtos.FiltroSalidaDTO;
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
@@ -81,10 +83,8 @@ public class ControlAbastecimiento {
     public void filtrarOrdenes(PantallaOrdenesProveedores vista, Object proveedorSel, Object estadoSel,
             Object tipoSel, LocalDate inicio, LocalDate fin) {
         try {
-            List<OrdenDTO> filtradas = abastecimientoFachada.obtenerTodasLasOrdenes().stream()
-                    .filter(orden -> coincideOrden(orden, proveedorSel, estadoSel, tipoSel, inicio, fin))
-                    .toList();
-            vista.llenarTabla(filtradas);
+            vista.llenarTabla(abastecimientoFachada.obtenerOrdenes(
+                    crearFiltroOrden(proveedorSel, estadoSel, tipoSel, inicio, fin)));
         } catch (AbastecimientoException ex) {
             navegador.mostrarMensaje("Error al procesar el filtrado de datos.", true);
         }
@@ -113,10 +113,7 @@ public class ControlAbastecimiento {
 
     public void filtrarSalidas(PantallaSalidas vista, Object razonSel, LocalDate inicio, LocalDate fin) {
         try {
-            List<SalidaDTO> filtradas = abastecimientoFachada.obtenerTodasLasSalidas().stream()
-                    .filter(salida -> coincideSalida(salida, razonSel, inicio, fin))
-                    .toList();
-            vista.llenarTabla(filtradas);
+            vista.llenarTabla(abastecimientoFachada.obtenerSalidas(crearFiltroSalida(razonSel, inicio, fin)));
         } catch (AbastecimientoException ex) {
             navegador.mostrarMensaje("Error al filtrar salidas.", true);
         }
@@ -249,39 +246,37 @@ public class ControlAbastecimiento {
         }
     }
 
-    private boolean coincideOrden(OrdenDTO orden, Object proveedorSel, Object estadoSel, Object tipoSel,
+    private FiltroOrdenDTO crearFiltroOrden(Object proveedorSel, Object estadoSel, Object tipoSel,
             LocalDate inicio, LocalDate fin) {
-        if (proveedorSel instanceof ProveedorDTO proveedor
-                && (orden.getProveedor() == null || !orden.getProveedor().getIdProveedor().equals(proveedor.getIdProveedor()))) {
-            return false;
+        FiltroOrdenDTO filtro = new FiltroOrdenDTO();
+        if (proveedorSel instanceof ProveedorDTO proveedor) {
+            filtro.setIdProveedor(proveedor.getIdProveedor());
         }
-        if (estadoSel instanceof EstadoOrdenDTO estado && orden.getEstadoOrden() != estado) {
-            return false;
+        if (estadoSel instanceof EstadoOrdenDTO estado) {
+            filtro.setEstado(estado);
         }
-        if (tipoSel instanceof TipoOrdenDTO tipo && orden.getTipoOrden() != tipo) {
-            return false;
+        if (tipoSel instanceof TipoOrdenDTO tipo) {
+            filtro.setTipoOrden(tipo);
         }
-        return fechaEnRango(orden.getFechaEntregaEst(), inicio, fin);
+        filtro.setFechaInicio(inicio);
+        filtro.setFechaFin(fin);
+        return filtro;
     }
 
-    private boolean coincideSalida(SalidaDTO salida, Object razonSel, LocalDate inicio, LocalDate fin) {
-        if (razonSel instanceof RazonSalidaDTO razon && salida.getRazon() != razon) {
-            return false;
+    private FiltroSalidaDTO crearFiltroSalida(Object razonSel, LocalDate inicio, LocalDate fin) {
+        FiltroSalidaDTO filtro = new FiltroSalidaDTO();
+        if (razonSel instanceof RazonSalidaDTO razon) {
+            filtro.setRazon(razon);
         }
-        return fechaEnRango(salida.getFechaSalida(), inicio, fin);
+        filtro.setFechaInicio(inicio);
+        filtro.setFechaFin(fin);
+        return filtro;
     }
 
     private boolean puedeConfirmarRecepcion(OrdenDTO orden) {
         return orden.getEstadoOrden() != EstadoOrdenDTO.RECIBIDO
                 && orden.getEstadoOrden() != EstadoOrdenDTO.CERRADO
                 && orden.getEstadoOrden() != EstadoOrdenDTO.CANCELADO;
-    }
-
-    private boolean fechaEnRango(LocalDate fecha, LocalDate inicio, LocalDate fin) {
-        if (inicio != null && (fecha == null || fecha.isBefore(inicio))) {
-            return false;
-        }
-        return fin == null || (fecha != null && !fecha.isAfter(fin));
     }
 
     private NuevaSalidaDTO nuevaSalidaDTO(SucursalDTO sucursal, RazonSalidaDTO razon, String comentarios,

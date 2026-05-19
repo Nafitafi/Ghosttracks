@@ -191,4 +191,9 @@ public class ProductosMockDAO implements IProductosDAO {
         producto.setStock((producto.getStock() != null ? producto.getStock() : 0) + cantidad);
         return producto;
     }
+
+    @Override
+    public Producto decrementarStock(String idProducto, int cantidad) throws PersistenciaException {
+        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+    }
 }
