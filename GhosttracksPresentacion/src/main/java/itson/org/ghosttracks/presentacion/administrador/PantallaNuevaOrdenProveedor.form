@@ -64,10 +64,10 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblOrdenesProveedores">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Realizar nueva orden"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Corbel" size="36" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Realizar nueva orden"/>
           </Properties>
         </Component>
         <Container class="itson.org.ghosttracks.utilerias.PanelRedondeado" name="panelRedondeado1">
@@ -194,7 +194,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxTipoOrden">
@@ -214,7 +214,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
               </AuxValues>
             </Component>
             <Component class="javax.swing.JComboBox" name="cbxProveedor">
@@ -234,7 +234,7 @@
                 </Property>
               </Properties>
               <AuxValues>
-                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+                <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
               </AuxValues>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane1">
@@ -259,11 +259,14 @@
             </Container>
             <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnBuscarProducto">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Buscar producto"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="b5" green="b5" red="b5" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Buscar producto"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarProductoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblCantidad">
               <Properties>
@@ -277,11 +280,14 @@
             </Component>
             <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnAgregarProducto">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Agregar producto"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="b5" green="b5" red="b5" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Agregar producto"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnAgregarProductoActionPerformed"/>
+              </Events>
             </Component>
             <Container class="javax.swing.JScrollPane" name="jScrollPane2">
 
@@ -304,25 +310,31 @@
             </Container>
             <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnCancelarOrden">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Cancelar Orden"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="2b" green="40" red="bf" type="rgb"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Cancelar Orden"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarOrdenActionPerformed"/>
+              </Events>
             </Component>
             <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnRealizarOrden">
               <Properties>
+                <Property name="text" type="java.lang.String" value="Realizar Orden"/>
                 <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="2b" green="40" red="bf" type="rgb"/>
                 </Property>
                 <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
                   <Color blue="ff" green="ff" red="ff" type="rgb"/>
                 </Property>
-                <Property name="text" type="java.lang.String" value="Realizar Orden"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRealizarOrdenActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblProducto">
               <Properties>

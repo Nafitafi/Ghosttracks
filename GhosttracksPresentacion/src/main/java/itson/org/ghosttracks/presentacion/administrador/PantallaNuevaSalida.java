@@ -1,9 +1,69 @@
 package itson.org.ghosttracks.presentacion.administrador;
 
+import itson.org.ghosttracks.controladores.ControlAbastecimiento;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoSalidaDTO;
+import itson.org.ghosttracks.dtos.SucursalDTO;
+import itson.org.ghosttracks.enums.RazonSalidaDTO;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 public class PantallaNuevaSalida extends javax.swing.JPanel {
+
+    private ControlAbastecimiento controlador;
+    private final List<SucursalDTO> sucursales = new ArrayList<>();
+    private final List<ProductoDTO> productosDisponibles = new ArrayList<>();
+    private final List<ProductoSalidaDTO> productosSalida = new ArrayList<>();
+    private ProductoDTO productoSeleccionado;
 
     public PantallaNuevaSalida() {
         initComponents();
+    }
+
+    public void setControlador(ControlAbastecimiento controlador) {
+        this.controlador = controlador;
+        if (controlador != null) {
+            controlador.inicializarFormularioNuevaSalida(this);
+        }
+    }
+
+    public void configurarComponentesDinamicos(List<SucursalDTO> sucursales, List<RazonSalidaDTO> razones) {
+        this.sucursales.clear();
+        this.sucursales.addAll(sucursales);
+
+        DefaultComboBoxModel<String> modeloSucursales = new DefaultComboBoxModel<>();
+        for (SucursalDTO sucursal : sucursales) {
+            modeloSucursales.addElement(sucursal.getNombre());
+        }
+        cbxSucursal.setModel(modeloSucursales);
+
+        DefaultComboBoxModel<String> modeloRazones = new DefaultComboBoxModel<>();
+        for (RazonSalidaDTO razon : razones) {
+            modeloRazones.addElement(razon.name());
+        }
+        cbxRazon.setModel(modeloRazones);
+    }
+
+    public void cargarProductosDisponibles(List<ProductoDTO> productos) {
+        this.productosDisponibles.clear();
+        this.productosDisponibles.addAll(productos);
+    }
+
+    private void prepararTabla() {
+        ((DefaultTableModel) tblProductos.getModel()).setRowCount(0);
+        tblProductos.addMouseListener(new java.awt.event.MouseAdapter() {
+            @Override
+            public void mouseClicked(java.awt.event.MouseEvent evt) {
+                int fila = tblProductos.rowAtPoint(evt.getPoint());
+                int columna = tblProductos.columnAtPoint(evt.getPoint());
+                if (fila >= 0 && columna == 3) {
+                    quitarProducto(fila);
+                }
+            }
+        });
     }
 
     @SuppressWarnings("unchecked")
@@ -48,6 +108,7 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
 
         btnBuscarProducto.setBackground(new java.awt.Color(181, 181, 181));
         btnBuscarProducto.setText("Buscar producto");
+        btnBuscarProducto.addActionListener(this::btnBuscarProductoActionPerformed);
 
         lblCantidad.setText("Cantidad:");
 
@@ -83,6 +144,7 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
         btnCancelar.setBackground(new java.awt.Color(191, 64, 43));
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Cancelar registro");
+        btnCancelar.addActionListener(this::btnCancelarActionPerformed);
 
         btnRegistrar.setBackground(new java.awt.Color(191, 64, 43));
         btnRegistrar.setForeground(new java.awt.Color(255, 255, 255));
@@ -183,12 +245,96 @@ public class PantallaNuevaSalida extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnAgregarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarProductoActionPerformed
-        // TODO add your handling code here:
+        if (productoSeleccionado == null) {
+            JOptionPane.showMessageDialog(this, "Selecciona un producto.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        int cantidad;
+        try {
+            cantidad = Integer.parseInt(tctCantidad.getText().trim());
+        } catch (NumberFormatException ex) {
+            JOptionPane.showMessageDialog(this, "La cantidad debe ser numerica.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (cantidad <= 0) {
+            JOptionPane.showMessageDialog(this, "La cantidad debe ser mayor a cero.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        productosSalida.add(new ProductoSalidaDTO(productoSeleccionado, cantidad));
+        recargarTablaProductos();
+        productoSeleccionado = null;
+        lblProductoDisplay.setText("ninguno");
+        tctCantidad.setText("");
     }//GEN-LAST:event_btnAgregarProductoActionPerformed
 
     private void btnRegistrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarActionPerformed
-        // TODO add your handling code here:
+        if (controlador == null) {
+            return;
+        }
+        if (cbxSucursal.getSelectedIndex() < 0 || cbxSucursal.getSelectedIndex() >= sucursales.size()) {
+            JOptionPane.showMessageDialog(this, "Selecciona una sucursal.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (productosSalida.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "Agrega al menos un producto.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        RazonSalidaDTO razon = RazonSalidaDTO.valueOf(String.valueOf(cbxRazon.getSelectedItem()));
+        controlador.registrarSalidaNueva(
+                sucursales.get(cbxSucursal.getSelectedIndex()),
+                razon,
+                txtaComentarios.getText(),
+                new ArrayList<>(productosSalida));
     }//GEN-LAST:event_btnRegistrarActionPerformed
+
+    private void btnBuscarProductoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnBuscarProductoActionPerformed
+        if (productosDisponibles.isEmpty()) {
+            JOptionPane.showMessageDialog(this, "No hay productos disponibles.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        String[] nombres = productosDisponibles.stream()
+                .map(producto -> producto.getNombre() + " (stock: " + producto.getStock() + ")")
+                .toArray(String[]::new);
+        String seleccion = (String) JOptionPane.showInputDialog(this, "Producto:", "Buscar producto",
+                JOptionPane.PLAIN_MESSAGE, null, nombres, nombres[0]);
+        if (seleccion == null) {
+            return;
+        }
+        for (int i = 0; i < nombres.length; i++) {
+            if (nombres[i].equals(seleccion)) {
+                productoSeleccionado = productosDisponibles.get(i);
+                lblProductoDisplay.setText(productoSeleccionado.getNombre());
+                break;
+            }
+        }
+    }//GEN-LAST:event_btnBuscarProductoActionPerformed
+
+    private void quitarProducto(int fila) {
+        if (fila >= 0 && fila < productosSalida.size()) {
+            productosSalida.remove(fila);
+            recargarTablaProductos();
+        }
+    }
+
+    private void recargarTablaProductos() {
+        DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+        modelo.setRowCount(0);
+        for (ProductoSalidaDTO productoSalida : productosSalida) {
+            ProductoDTO producto = productoSalida.getProducto();
+            modelo.addRow(new Object[]{
+                producto != null ? producto.getIdProducto() : "NA",
+                producto != null ? producto.getNombre() : "NA",
+                productoSalida.getCantidad(),
+                "Quitar"
+            });
+        }
+    }
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        if (controlador != null) {
+            controlador.volverASalidas();
+        }
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnAgregarProducto;

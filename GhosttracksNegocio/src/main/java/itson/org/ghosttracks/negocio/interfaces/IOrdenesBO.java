@@ -6,6 +6,7 @@ package itson.org.ghosttracks.negocio.interfaces;
 
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
 import java.util.List;
@@ -42,12 +43,12 @@ public interface IOrdenesBO {
      * @throws
      * itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException
      */
-    void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException;
+    void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException;
 
     List<OrdenDTO> obtenerOrdenes() throws NegocioException;
 
-    OrdenDTO obtenerOrdenPorId(Long idOrden) throws NegocioException;
+    OrdenDTO obtenerOrdenPorId(String idOrden) throws NegocioException;
 
-    OrdenDTO confirmarRecepcion(Long idOrden, byte[] imagen) throws NegocioException;
+    OrdenDTO confirmarRecepcion(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws NegocioException;
 
 }

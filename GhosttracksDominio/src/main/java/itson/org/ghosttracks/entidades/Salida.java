@@ -13,19 +13,20 @@ import java.util.List;
  * @author nafbr
  */
 public class Salida {
-    private Long idSalida;
+    private String idSalida;
     private LocalDate fechaSalida;
     private String comenatriosSalida;
     private RazonSalida razon;
     
     //Relaciones
-    private Long idSucursal;
+    private String idSucursal;
+    private String nombreSucursal;
     private List<ProductoSalida> productosSalida;
 
     public Salida() {
     }
 
-    public Salida(Long idSalida, LocalDate fechaSalida, String comenatriosSalida, RazonSalida razon, Long idSucursal, List<ProductoSalida> productosSalida) {
+    public Salida(String idSalida, LocalDate fechaSalida, String comenatriosSalida, RazonSalida razon, String idSucursal, List<ProductoSalida> productosSalida) {
         this.idSalida = idSalida;
         this.fechaSalida = fechaSalida;
         this.comenatriosSalida = comenatriosSalida;
@@ -34,11 +35,11 @@ public class Salida {
         this.productosSalida = productosSalida;
     }
 
-    public Long getIdSalida() {
+    public String getIdSalida() {
         return idSalida;
     }
 
-    public void setIdSalida(Long idSalida) {
+    public void setIdSalida(String idSalida) {
         this.idSalida = idSalida;
     }
 
@@ -66,12 +67,20 @@ public class Salida {
         this.razon = razon;
     }
 
-    public Long getIdSucursal() {
+    public String getIdSucursal() {
         return idSucursal;
     }
 
-    public void setIdSucursal(Long idSucursal) {
+    public void setIdSucursal(String idSucursal) {
         this.idSucursal = idSucursal;
+    }
+
+    public String getNombreSucursal() {
+        return nombreSucursal;
+    }
+
+    public void setNombreSucursal(String nombreSucursal) {
+        this.nombreSucursal = nombreSucursal;
     }
 
     public List<ProductoSalida> getProductosSalida() {
@@ -81,6 +90,5 @@ public class Salida {
     public void setProductosSalida(List<ProductoSalida> productosSalida) {
         this.productosSalida = productosSalida;
     }
-    
     
 }

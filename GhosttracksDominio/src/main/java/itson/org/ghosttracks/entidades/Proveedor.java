@@ -9,7 +9,8 @@ package itson.org.ghosttracks.entidades;
  * @author nafbr
  */
 public class Proveedor {
-    private Long idProveedor;
+
+    private String idProveedor;
     private String nombreProovedor;
     private Direccion direccionProovedor;
     private String numeroTelefono;
@@ -17,19 +18,18 @@ public class Proveedor {
     public Proveedor() {
     }
 
-    public Proveedor(Long idProveedor, String nombreProovedor, Direccion direccionProovedor, String numeroTelefono) {
+    public Proveedor(String idProveedor, String nombreProovedor, Direccion direccionProovedor, String numeroTelefono) {
         this.idProveedor = idProveedor;
         this.nombreProovedor = nombreProovedor;
         this.direccionProovedor = direccionProovedor;
         this.numeroTelefono = numeroTelefono;
     }
 
-    
-    public Long getIdProveedor() {
+    public String getIdProveedor() {
         return idProveedor;
     }
 
-    public void setIdProveedor(Long idProveedor) {
+    public void setIdProveedor(String idProveedor) {
         this.idProveedor = idProveedor;
     }
 
@@ -56,6 +56,5 @@ public class Proveedor {
     public void setNumeroTelefono(String numeroTelefono) {
         this.numeroTelefono = numeroTelefono;
     }
-    
-    
+
 }

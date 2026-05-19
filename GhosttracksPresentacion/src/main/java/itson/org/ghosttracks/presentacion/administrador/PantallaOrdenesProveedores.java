@@ -4,7 +4,7 @@ import itson.org.ghosttracks.controladores.ControlAbastecimiento;
 import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.ProveedorDTO;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
-import itson.org.ghosttracks.enums.TipoOrden;
+import itson.org.ghosttracks.enums.TipoOrdenDTO;
 import java.awt.Component;
 import java.awt.FlowLayout;
 import java.time.LocalDate;
@@ -12,7 +12,9 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.swing.AbstractCellEditor;
 import javax.swing.DefaultComboBoxModel;
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JButton;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableModel;
@@ -39,7 +41,7 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
         }
     }
 
-    public void configurarComponentesDinamicos(List<ProveedorDTO> proveedores, List<EstadoOrdenDTO> estados, List<TipoOrden> tipos) {
+    public void configurarComponentesDinamicos(List<ProveedorDTO> proveedores, List<EstadoOrdenDTO> estados, List<TipoOrdenDTO> tipos) {
         // Carga de Proveedores
         DefaultComboBoxModel<Object> modelProv = new DefaultComboBoxModel<>();
         modelProv.addElement("TODOS");
@@ -47,6 +49,15 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
             modelProv.addElement(p);
         }
         cmbxProovedor.setModel(modelProv);
+        cmbxProovedor.setRenderer(new DefaultListCellRenderer() {
+            @Override
+            public Component getListCellRendererComponent(JList<?> list, Object value, int index, boolean isSelected, boolean cellHasFocus) {
+                if (value instanceof ProveedorDTO proveedor) {
+                    value = proveedor.getNombreProveedor();
+                }
+                return super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+            }
+        });
 
         DefaultComboBoxModel<Object> modelEstado = new DefaultComboBoxModel<>();
         modelEstado.addElement("TODOS");
@@ -57,7 +68,7 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
 
         DefaultComboBoxModel<Object> modelTipo = new DefaultComboBoxModel<>();
         modelTipo.addElement("TODOS");
-        for (TipoOrden t : tipos) {
+        for (TipoOrdenDTO t : tipos) {
             modelTipo.addElement(t);
         }
         cmbxTipo.setModel(modelTipo);
@@ -76,7 +87,7 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
                 o.getProveedor() != null ? o.getProveedor().getNombreProveedor() : "N/A",
                 o.getComentarios() != null ? o.getComentarios() : "",
                 String.format("$%.2f", o.getTotal()),
-                o.getFechaSolicitud() != null ? o.getFechaEntregaEst().toString() : "Sin definir",
+                o.getFechaEntregaEst() != null ? o.getFechaEntregaEst().toString() : "Sin definir",
                 o.getEstadoOrden(),
                 o
             };
@@ -99,10 +110,12 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
             AccionesCellRenderEditor renderEditor = new AccionesCellRenderEditor(this.controlador, this);
             tblOrdenes.getColumnModel().getColumn(indiceColumnaAcciones).setCellRenderer(renderEditor);
             tblOrdenes.getColumnModel().getColumn(indiceColumnaAcciones).setCellEditor(renderEditor);
+            tblOrdenes.getColumnModel().getColumn(indiceColumnaAcciones).setMinWidth(245);
+            tblOrdenes.getColumnModel().getColumn(indiceColumnaAcciones).setPreferredWidth(270);
         }
 
         // Ajustar la altura de las filas para que los 3 botones se desplieguen estéticamente
-        tblOrdenes.setRowHeight(35);
+        tblOrdenes.setRowHeight(42);
     }
 
     @SuppressWarnings("unchecked")
@@ -127,13 +140,10 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
         lblOrdenesProveedores.setText("Ordenes a proveedores");
         lblOrdenesProveedores.setFont(new java.awt.Font("Corbel", 1, 36)); // NOI18N
 
-        cmbxProovedor.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbxProovedor.setBorder(javax.swing.BorderFactory.createTitledBorder("Proveedor:"));
 
-        cmbxEstado.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbxEstado.setBorder(javax.swing.BorderFactory.createTitledBorder("Estado:"));
 
-        cmbxTipo.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
         cmbxTipo.setBorder(javax.swing.BorderFactory.createTitledBorder("Tipo:"));
 
         dpFechaInicio.setBorder(javax.swing.BorderFactory.createTitledBorder("Fecha inicio:"));
@@ -254,19 +264,40 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
     }//GEN-LAST:event_btnFiltrarOrdenesActionPerformed
 
     private void btnAgregarOrdenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarOrdenActionPerformed
-        if (controlador != null) {
-            controlador.irAAgregarOrdenNueva();
+       if (controlador != null) {
+            controlador.exportarReporteAgrupado(tblOrdenes, "Ordenes a proveedores", obtenerFiltrosReporte());
         }
     }//GEN-LAST:event_btnAgregarOrdenActionPerformed
 
     private void btnGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPDFActionPerformed
-        btnGenerarPDF.addActionListener(e -> {
-            if (controlador != null) {
-                controlador.generarReportePDF(ordenesDesplegadas);
-            }
-        });
+       if (controlador != null) {
+            controlador.exportarReporteAgrupado(tblOrdenes, "Ordenes a proveedores", obtenerFiltrosReporte());
+        }
     }//GEN-LAST:event_btnGenerarPDFActionPerformed
 
+    private String obtenerFiltrosReporte() {
+        List<String> filtros = new ArrayList<>();
+        Object proveedor = cmbxProovedor.getSelectedItem();
+        Object estado = cmbxEstado.getSelectedItem();
+        Object tipo = cmbxTipo.getSelectedItem();
+        if (proveedor instanceof ProveedorDTO proveedorDTO) {
+            filtros.add("Proveedor: " + proveedorDTO.getNombreProveedor());
+        }
+        if (estado instanceof EstadoOrdenDTO) {
+            filtros.add("Estado: " + estado);
+        }
+        if (tipo instanceof TipoOrdenDTO) {
+            filtros.add("Tipo: " + tipo);
+        }
+        if (dpFechaInicio.getDate() != null) {
+            filtros.add("Fecha inicio: " + dpFechaInicio.getDate());
+        }
+        if (dpFechaFIn.getDate() != null) {
+            filtros.add("Fecha fin: " + dpFechaFIn.getDate());
+        }
+        return filtros.isEmpty() ? "todos" : String.join("; ", filtros);
+    }
+    
     //Para renderizal los botones:
     public class AccionesCellRenderEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
 
@@ -291,7 +322,7 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
             btnConfirmar.addActionListener(e -> {
                 fireEditingStopped();
                 if (controlador != null && ordenActual != null) {
-                    controlador.confirmarOrden(ordenActual);
+                    controlador.confirmarOrden(ordenActual, vista);
                 }
             });
 
@@ -308,27 +339,23 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
             panel.add(btnCancelar);
         }
 
-        private void configurarComponente(JTable table, Object value, int row) {
-            if (value instanceof OrdenDTO) {
-                this.ordenActual = (OrdenDTO) value;
-            }
-            
-            if (table.isRowSelected(row)) {
-                panel.setBackground(table.getSelectionBackground());
-            } else {
-                panel.setBackground(table.getBackground());
-            }
+        private void configurarOrdenActual(JTable table, int row) {
+            int filaModelo = table.convertRowIndexToModel(row);
+            ordenActual = filaModelo >= 0 && filaModelo < ordenesDesplegadas.size()
+                    ? ordenesDesplegadas.get(filaModelo)
+                    : null;
         }
 
         @Override
         public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
-            configurarComponente(table, value, row);
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             return panel;
         }
 
         @Override
         public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
-            configurarComponente(table, value, row);
+            configurarOrdenActual(table, row);
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
             return panel;
         }
 
@@ -342,9 +369,9 @@ public class PantallaOrdenesProveedores extends javax.swing.JPanel {
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnAgregarOrden;
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnFiltrarOrdenes;
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnGenerarPDF;
-    private javax.swing.JComboBox<String> cmbxEstado;
-    private javax.swing.JComboBox<String> cmbxProovedor;
-    private javax.swing.JComboBox<String> cmbxTipo;
+    private javax.swing.JComboBox<Object> cmbxEstado;
+    private javax.swing.JComboBox<Object> cmbxProovedor;
+    private javax.swing.JComboBox<Object> cmbxTipo;
     private com.github.lgooddatepicker.components.DatePicker dpFechaFIn;
     private com.github.lgooddatepicker.components.DatePicker dpFechaInicio;
     private javax.swing.JLabel lblOrdenesProveedores;

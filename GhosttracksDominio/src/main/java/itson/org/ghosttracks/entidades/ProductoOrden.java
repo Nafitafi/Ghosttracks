@@ -15,16 +15,16 @@ public class ProductoOrden {
     private Double importeTotal;
     private Double precioUnitario;
     private Boolean recibido;
-    
+    private String nombreProducto;
     //Relaciones
-    private Long idOrden;
-    private Long idProducto;
+    private String idOrden;
+    private String idProducto;
 
     public ProductoOrden() {
     }
 
     
-    public ProductoOrden(Integer cantidadProducto, Double importeTotal, Double precioUnitario, Boolean recibido, RazonSalida razon, Long idOrden, Long idProducto) {
+    public ProductoOrden(Integer cantidadProducto, Double importeTotal, Double precioUnitario, Boolean recibido, RazonSalida razon, String idOrden, String idProducto) {
         this.cantidadProducto = cantidadProducto;
         this.importeTotal = importeTotal;
         this.precioUnitario = precioUnitario;
@@ -65,20 +65,27 @@ public class ProductoOrden {
         this.recibido = recibido;
     }
 
-    public Long getIdOrden() {
+    public String getIdOrden() {
         return idOrden;
     }
 
-    public void setIdOrden(Long idOrden) {
+    public void setIdOrden(String idOrden) {
         this.idOrden = idOrden;
     }
 
-    public Long getIdProducto() {
+    public String getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Long idProducto) {
+    public void setIdProducto(String idProducto) {
         this.idProducto = idProducto;
     }
-    
+
+    public String getNombreProducto() {
+        return nombreProducto;
+    }
+
+    public void setNombreProducto(String nombreProducto) {
+        this.nombreProducto = nombreProducto;
+    }
 }

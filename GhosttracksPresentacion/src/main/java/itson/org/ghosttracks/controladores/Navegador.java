@@ -1,12 +1,19 @@
-
 package itson.org.ghosttracks.controladores;
 
+import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.PedidoDTO;
 import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.SalidaDTO;
 import itson.org.ghosttracks.presentacion.VentanaPrincipal;
 import itson.org.ghosttracks.presentacion.administrador.PanelConfirmarEmpaquetado;
 import itson.org.ghosttracks.presentacion.administrador.PanelDatosPaquete;
+import itson.org.ghosttracks.presentacion.administrador.PantallaConfirmacionRecepcion;
+import itson.org.ghosttracks.presentacion.administrador.PantallaNuevaOrdenProveedor;
+import itson.org.ghosttracks.presentacion.administrador.PantallaNuevaSalida;
 import itson.org.ghosttracks.presentacion.administrador.PantallaOrdenesProveedores;
+import itson.org.ghosttracks.presentacion.administrador.PantallaRegistroSalida;
+import itson.org.ghosttracks.presentacion.administrador.PantallaResumenOrden;
+import itson.org.ghosttracks.presentacion.administrador.PantallaSalidas;
 import itson.org.ghosttracks.presentacion.administrador.PantallaVentasProcesarAdmin;
 import itson.org.ghosttracks.presentacion.administrador.PantallaVentas;
 import itson.org.ghosttracks.presentacion.cliente.PantallaCarrito;
@@ -27,16 +34,17 @@ import javax.swing.JPanel;
  * @author oliro
  */
 public class Navegador {
+
     private final VentanaPrincipal ventana;
     private final ControlVentaEnLinea ctrlVentaLinea;
     private ControladorVentasAdmin ctrlVentasAdmin;
     private ControlAbastecimiento ctrlAbastecimiento;
- 
+
     public Navegador(VentanaPrincipal ventana) {
         this.ctrlVentaLinea = new ControlVentaEnLinea(this);
         this.ventana = ventana;
     }
-    
+
     //Cosas de las sesión
     public void irLogin() {
         ventana.limpiarMenuYHeader();
@@ -44,88 +52,127 @@ public class Navegador {
         panelLogin vista = new panelLogin(ctrl);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void cerrarSesion() {
         ctrlVentasAdmin = null;
         ctrlAbastecimiento = null;
         irLogin();
     }
-    
+
     //Paneles del cliente
-     public void iniciarSesionClienteExitoso() {
+    public void iniciarSesionClienteExitoso() {
         ventana.fijarMenuLateral(new pnlMenuLateral(this));
         ventana.fijarHeader(new PanelHeader(this));
     }
- 
+
     public void irInicioCliente() {
         PantallaInicioCliente vista = new PantallaInicioCliente(ctrlVentaLinea);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irVistaProducto(ProductoDTO producto) {
         PantallaVistaProducto vista = new PantallaVistaProducto(ctrlVentaLinea, producto);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irCarrito() {
         PantallaCarrito vista = new PantallaCarrito(ctrlVentaLinea);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irFormularioContacto() {
         PantallaFormularioContacto vista = new PantallaFormularioContacto(ctrlVentaLinea);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irFormularioEntrega() {
         PantallaFormularioEntrega vista = new PantallaFormularioEntrega(ctrlVentaLinea);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irSeleccionMetodoPago() {
         PantallaSeleccionMetodoDePago vista = new PantallaSeleccionMetodoDePago(ctrlVentaLinea);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irPedidoConfirmado(PedidoDTO pedidoConfirmado) {
         pnlResumenPedidoConfirmado vista = new pnlResumenPedidoConfirmado(ctrlVentaLinea);
         vista.cargarDatosPedido(pedidoConfirmado);
         ventana.cambiarPantalla(vista);
     }
-    
+
     //Paneles de admin
-     public void iniciarSesionAdminExitoso() {
+    public void iniciarSesionAdminExitoso() {
         ctrlVentasAdmin = new ControladorVentasAdmin(this);
         ctrlAbastecimiento = new ControlAbastecimiento(this);
         ventana.fijarMenuLateral(new pnlMenuLateralAdmin(this));
         ventana.fijarHeader(new PanelHeader(this));
     }
- 
+
     public void irVentasAdmin() {
         PantallaVentas vista = new PantallaVentas(ctrlVentasAdmin);
         ventana.cambiarPantalla(vista);
     }
- 
+
     public void irPantallaConfirmarEmpaque(PedidoDTO pedidoSeleccionado) {
         PantallaVentasProcesarAdmin vistaBase = new PantallaVentasProcesarAdmin(ctrlVentasAdmin, pedidoSeleccionado);
         JPanel panelEmpaque = new PanelConfirmarEmpaquetado(ctrlVentasAdmin, pedidoSeleccionado);
         vistaBase.cambiarPanelAccion(panelEmpaque);
         ventana.cambiarPantalla(vistaBase);
     }
- 
+
     public void irPantallaConfirmarEnvio(PedidoDTO pedidoSeleccionado) {
         PantallaVentasProcesarAdmin vistaBase = new PantallaVentasProcesarAdmin(ctrlVentasAdmin, pedidoSeleccionado);
         JPanel panelEnvio = new PanelDatosPaquete(ctrlVentasAdmin, pedidoSeleccionado);
         vistaBase.cambiarPanelAccion(panelEnvio);
         ventana.cambiarPantalla(vistaBase);
     }
-    
+
     public void irOrdenesProveedores() {
         PantallaOrdenesProveedores vista = new PantallaOrdenesProveedores();
         vista.setControlador(this.ctrlAbastecimiento);
         ventana.cambiarPantalla(vista);
     }
-    
+
+    public void irFormularioNuevaOrden() {
+        PantallaNuevaOrdenProveedor vista = new PantallaNuevaOrdenProveedor();
+        vista.setControlador(this.ctrlAbastecimiento);
+        ventana.cambiarPantalla(vista);
+    }
+
+    public void irResumenOrden(OrdenDTO orden) {
+        PantallaResumenOrden vista = new PantallaResumenOrden();
+        vista.setControlador(this.ctrlAbastecimiento);
+        vista.cargarOrden(orden);
+        ventana.cambiarPantalla(vista);
+    }
+
+    public void irConfirmacionRecepcion(OrdenDTO orden) {
+        PantallaConfirmacionRecepcion vista = new PantallaConfirmacionRecepcion();
+        vista.setControlador(this.ctrlAbastecimiento);
+        vista.cargarOrden(orden);
+        ventana.cambiarPantalla(vista);
+    }
+
+    public void irSalidas() {
+        PantallaSalidas vista = new PantallaSalidas();
+        vista.setControlador(this.ctrlAbastecimiento);
+        ventana.cambiarPantalla(vista);
+    }
+
+    public void irFormularioNuevaSalida() {
+        PantallaNuevaSalida vista = new PantallaNuevaSalida();
+        vista.setControlador(this.ctrlAbastecimiento);
+        ventana.cambiarPantalla(vista);
+    }
+
+    public void irRegistroSalida(SalidaDTO salida) {
+        PantallaRegistroSalida vista = new PantallaRegistroSalida();
+        vista.setControlador(this.ctrlAbastecimiento);
+        vista.cargarSalida(salida);
+        ventana.cambiarPantalla(vista);
+    }
+
     //Utilidades
     public void mostrarMensaje(String mensaje, boolean esError) {
         ventana.mostrarMensaje(mensaje, esError);

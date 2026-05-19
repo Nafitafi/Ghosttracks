@@ -13,8 +13,9 @@ public interface IProductosDAO {
     
     public abstract List<Producto> obtenerTodos() throws PersistenciaException;
     
-    public abstract Producto buscarPorId(Long idProducto) throws PersistenciaException;
+    public abstract Producto buscarPorId(String idProducto) throws PersistenciaException;
     
     public abstract Producto agregar(ProductoDTO producto) throws PersistenciaException;
+    
     
 }

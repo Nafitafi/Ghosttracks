@@ -1,5 +1,22 @@
 package itson.org.ghosttracks.presentacion.administrador;
 
+import itson.org.ghosttracks.controladores.ControlAbastecimiento;
+import itson.org.ghosttracks.dtos.SalidaDTO;
+import itson.org.ghosttracks.enums.RazonSalidaDTO;
+import java.awt.Component;
+import java.awt.FlowLayout;
+import java.time.LocalDate;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.AbstractCellEditor;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JButton;
+import javax.swing.JPanel;
+import javax.swing.JTable;
+import javax.swing.table.DefaultTableModel;
+import javax.swing.table.TableCellEditor;
+import javax.swing.table.TableCellRenderer;
+import javax.swing.table.TableColumn;
 
 /**
  *
@@ -7,8 +24,75 @@ package itson.org.ghosttracks.presentacion.administrador;
  */
 public class PantallaSalidas extends javax.swing.JPanel {
 
+    private ControlAbastecimiento controlador;
+    private List<SalidaDTO> salidasDesplegadas = new ArrayList<>();
+
     public PantallaSalidas() {
         initComponents();
+    }
+
+    public void setControlador(ControlAbastecimiento controlador) {
+        this.controlador = controlador;
+        if (controlador != null) {
+            controlador.inicializarFiltrosYTablaSalidas(this);
+        }
+    }
+
+    public void configurarComponentesDinamicos(List<RazonSalidaDTO> razones) {
+        DefaultComboBoxModel<Object> modelRazon = new DefaultComboBoxModel<>();
+        modelRazon.addElement("TODAS");
+        for (RazonSalidaDTO razon : razones) {
+            modelRazon.addElement(razon);
+        }
+        cbxRazon.setModel(modelRazon);
+    }
+
+    public void llenarTabla(List<SalidaDTO> salidas) {
+        this.salidasDesplegadas = salidas;
+        DefaultTableModel model = (DefaultTableModel) tblSalidas.getModel();
+        model.setRowCount(0);
+        for (SalidaDTO salida : salidas) {
+            model.addRow(new Object[]{
+                salida.getIdSalida(),
+                salida.getFolio(),
+                salida.getRazon(),
+                salida.getComentarios() != null ? salida.getComentarios() : "",
+                salida.getResumenProductos(),
+                salida.getCantidadTotalProductos(),
+                "Ver"
+            });
+        }
+        configurarAccionVer();
+    }
+
+    private void configurarAccionVer() {
+        tblSalidas.setRowHeight(32);
+        for (int i = 0; i < tblSalidas.getColumnModel().getColumnCount(); i++) {
+            TableColumn columna = tblSalidas.getColumnModel().getColumn(i);
+            if ("Acciones".equals(columna.getHeaderValue())) {
+                columna.setMinWidth(90);
+                columna.setPreferredWidth(100);
+                VerSalidaRenderEditor renderEditor = new VerSalidaRenderEditor();
+                columna.setCellRenderer(renderEditor);
+                columna.setCellEditor(renderEditor);
+                break;
+            }
+        }
+    }
+
+    private String obtenerFiltrosReporte() {
+        List<String> filtros = new ArrayList<>();
+        Object razon = cbxRazon.getSelectedItem();
+        if (razon instanceof RazonSalidaDTO) {
+            filtros.add("Razon: " + razon);
+        }
+        if (dtpFechaInicio.getDate() != null) {
+            filtros.add("Fecha inicio: " + dtpFechaInicio.getDate());
+        }
+        if (dtpFechaFin.getDate() != null) {
+            filtros.add("Fecha fin: " + dtpFechaFin.getDate());
+        }
+        return filtros.isEmpty() ? "todos" : String.join("; ", filtros);
     }
 
     @SuppressWarnings("unchecked")
@@ -28,19 +112,20 @@ public class PantallaSalidas extends javax.swing.JPanel {
 
         pnlPrincipal.setBackground(new java.awt.Color(237, 229, 222));
 
+        lblRegistroSalida.setText("Registro de salidas de mercancía");
         lblRegistroSalida.setFont(new java.awt.Font("Corbel", 1, 36)); // NOI18N
-        lblRegistroSalida.setText("Registro de salidas de mercancÃ­a");
 
         cbxRazon.setModel(new javax.swing.DefaultComboBoxModel<>(new String[] { "Item 1", "Item 2", "Item 3", "Item 4" }));
-        cbxRazon.setBorder(javax.swing.BorderFactory.createTitledBorder("RazÃ³n"));
+        cbxRazon.setBorder(javax.swing.BorderFactory.createTitledBorder("Razón"));
 
         dtpFechaInicio.setBorder(javax.swing.BorderFactory.createTitledBorder("Fecha inicio"));
 
         dtpFechaFin.setBorder(javax.swing.BorderFactory.createTitledBorder("Fecha fin"));
 
+        btnFiltrar.setText("Filtrar salidas");
         btnFiltrar.setBackground(new java.awt.Color(191, 64, 43));
         btnFiltrar.setForeground(new java.awt.Color(255, 255, 255));
-        btnFiltrar.setText("Filtrar salidas");
+        btnFiltrar.addActionListener(this::btnFiltrarActionPerformed);
 
         tblSalidas.setModel(new javax.swing.table.DefaultTableModel(
             new Object [][] {
@@ -50,7 +135,7 @@ public class PantallaSalidas extends javax.swing.JPanel {
                 {null, null, null, null, null, null, null}
             },
             new String [] {
-                "Id", "Folio", "RazÃ³n", "Comentarios", "Productos", "Cantidad", "Acciones"
+                "Id", "Folio", "Razón", "Comentarios", "Productos", "Cantidad", "Acciones"
             }
         ) {
             boolean[] canEdit = new boolean [] {
@@ -63,13 +148,15 @@ public class PantallaSalidas extends javax.swing.JPanel {
         });
         jScrollPane1.setViewportView(tblSalidas);
 
+        btnRegistrarSalida.setText("Registrar salida nueva");
         btnRegistrarSalida.setBackground(new java.awt.Color(191, 64, 43));
         btnRegistrarSalida.setForeground(new java.awt.Color(255, 255, 255));
-        btnRegistrarSalida.setText("Registrar salida nueva");
+        btnRegistrarSalida.addActionListener(this::btnRegistrarSalidaActionPerformed);
 
+        btnGenerarPDF.setText("Generar PDF");
         btnGenerarPDF.setBackground(new java.awt.Color(191, 64, 43));
         btnGenerarPDF.setForeground(new java.awt.Color(255, 255, 255));
-        btnGenerarPDF.setText("Generar PDF");
+        btnGenerarPDF.addActionListener(this::btnGenerarPDFActionPerformed);
 
         javax.swing.GroupLayout pnlPrincipalLayout = new javax.swing.GroupLayout(pnlPrincipal);
         pnlPrincipal.setLayout(pnlPrincipalLayout);
@@ -132,12 +219,74 @@ public class PantallaSalidas extends javax.swing.JPanel {
         );
     }// </editor-fold>//GEN-END:initComponents
 
+    private void btnFiltrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnFiltrarActionPerformed
+        if (controlador != null) {
+            Object razon = cbxRazon.getSelectedItem();
+            LocalDate inicio = dtpFechaInicio.getDate();
+            LocalDate fin = dtpFechaFin.getDate();
+            controlador.filtrarSalidas(this, razon, inicio, fin);
+        }
+    }//GEN-LAST:event_btnFiltrarActionPerformed
+
+    private void btnRegistrarSalidaActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnRegistrarSalidaActionPerformed
+        if (controlador != null) {
+            controlador.irAAgregarSalidaNueva();
+        }
+    }//GEN-LAST:event_btnRegistrarSalidaActionPerformed
+
+    private void btnGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPDFActionPerformed
+        if (controlador != null) {
+            controlador.exportarReporteAgrupado(tblSalidas, "Registro de salidas", obtenerFiltrosReporte());
+        }
+    }//GEN-LAST:event_btnGenerarPDFActionPerformed
+    private class VerSalidaRenderEditor extends AbstractCellEditor implements TableCellRenderer, TableCellEditor {
+
+        private final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 0, 0));
+        private final JButton btnVer = new JButton("Ver");
+        private SalidaDTO salidaActual;
+
+        VerSalidaRenderEditor() {
+            panel.setOpaque(true);
+            btnVer.addActionListener(e -> {
+                fireEditingStopped();
+                if (controlador != null && salidaActual != null) {
+                    controlador.verDetalleSalida(salidaActual);
+                }
+            });
+            panel.add(btnVer);
+        }
+
+        @Override
+        public Component getTableCellRendererComponent(JTable table, Object value, boolean isSelected, boolean hasFocus, int row, int column) {
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return panel;
+        }
+
+        @Override
+        public Component getTableCellEditorComponent(JTable table, Object value, boolean isSelected, int row, int column) {
+            configurarSalidaActual(table, row);
+            panel.setBackground(isSelected ? table.getSelectionBackground() : table.getBackground());
+            return panel;
+        }
+
+        @Override
+        public Object getCellEditorValue() {
+            return salidaActual;
+        }
+
+        private void configurarSalidaActual(JTable table, int row) {
+            int filaModelo = table.convertRowIndexToModel(row);
+            salidaActual = filaModelo >= 0 && filaModelo < salidasDesplegadas.size()
+                    ? salidasDesplegadas.get(filaModelo)
+                    : null;
+        }
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnFiltrar;
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnGenerarPDF;
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnRegistrarSalida;
-    private javax.swing.JComboBox<String> cbxRazon;
+    private javax.swing.JComboBox<Object> cbxRazon;
     private com.github.lgooddatepicker.components.DatePicker dtpFechaFin;
     private com.github.lgooddatepicker.components.DatePicker dtpFechaInicio;
     private javax.swing.JScrollPane jScrollPane1;

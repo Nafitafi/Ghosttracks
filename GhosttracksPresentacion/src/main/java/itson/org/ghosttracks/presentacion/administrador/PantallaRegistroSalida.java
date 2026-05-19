@@ -1,5 +1,12 @@
 package itson.org.ghosttracks.presentacion.administrador;
 
+import itson.org.ghosttracks.controladores.ControlAbastecimiento;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoSalidaDTO;
+import itson.org.ghosttracks.dtos.SalidaDTO;
+import javax.swing.JOptionPane;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -7,10 +14,45 @@ package itson.org.ghosttracks.presentacion.administrador;
  */
 public class PantallaRegistroSalida extends javax.swing.JPanel {
 
+    private ControlAbastecimiento controlador;
+    private SalidaDTO salida;
+    
     public PantallaRegistroSalida() {
         initComponents();
     }
+public void setControlador(ControlAbastecimiento controlador) {
+        this.controlador = controlador;
+    }
 
+    public void cargarSalida(SalidaDTO salida) {
+        this.salida = salida;
+        if (salida == null) {
+            return;
+        }
+        lblFechaOrden1.setText(salida.getFechaSalida() != null ? salida.getFechaSalida().toString() : "NA");
+        lblFechaOrden3.setText(texto(salida.getFolio()));
+        lblFechaOrden5.setText(salida.getRazon() != null ? salida.getRazon().toString() : "NA");
+        lblFechaOrden7.setText(salida.getSucursal() != null ? texto(salida.getSucursal().getNombre()) : "NA");
+        jTextArea1.setText(texto(salida.getComentarios()));
+
+        DefaultTableModel modelo = (DefaultTableModel) tblProductos.getModel();
+        modelo.setRowCount(0);
+        if (salida.getProductos() != null) {
+            for (ProductoSalidaDTO productoSalida : salida.getProductos()) {
+                ProductoDTO producto = productoSalida.getProducto();
+                modelo.addRow(new Object[]{
+                    producto != null ? producto.getIdProducto() : "NA",
+                    producto != null ? texto(producto.getNombre()) : "NA",
+                    productoSalida.getCantidad()
+                });
+            }
+        }
+    }
+
+    private String texto(String valor) {
+        return valor != null && !valor.isBlank() ? valor : "NA";
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -66,6 +108,7 @@ public class PantallaRegistroSalida extends javax.swing.JPanel {
         btnCancelar.setBackground(new java.awt.Color(191, 64, 43));
         btnCancelar.setForeground(new java.awt.Color(255, 255, 255));
         btnCancelar.setText("Volver");
+        btnCancelar.addActionListener(this::btnCancelarActionPerformed);
 
         btnGenerarPDF.setBackground(new java.awt.Color(191, 64, 43));
         btnGenerarPDF.setForeground(new java.awt.Color(255, 255, 255));
@@ -193,8 +236,18 @@ public class PantallaRegistroSalida extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPDFActionPerformed
-        // TODO add your handling code here:
+        if (controlador != null) {
+            controlador.exportarReporteIndividual(tblProductos, "Registro de salida " + (salida != null ? texto(salida.getFolio()) : ""));
+        } else {
+            JOptionPane.showMessageDialog(this, "No se pudo generar el reporte.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
     }//GEN-LAST:event_btnGenerarPDFActionPerformed
+
+    private void btnCancelarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnCancelarActionPerformed
+        if (controlador != null) {
+            controlador.volverASalidas();
+        }
+    }//GEN-LAST:event_btnCancelarActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnCancelar;

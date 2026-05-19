@@ -10,7 +10,7 @@ package itson.org.ghosttracks.entidades;
  */
 public class Sucursal {
     
-    private Long idSucursal;
+    private String idSucursal;
     
     private Direccion direccion;
     private String telefono;
@@ -26,18 +26,18 @@ public class Sucursal {
         this.nombre = nombre;
     }
 
-    public Sucursal(Long idSucursal, Direccion direccion, String telefono, String nombre) {
+    public Sucursal(String idSucursal, Direccion direccion, String telefono, String nombre) {
         this.idSucursal = idSucursal;
         this.direccion = direccion;
         this.telefono = telefono;
         this.nombre = nombre;
     }
 
-    public Long getIdSucursal() {
+    public String getIdSucursal() {
         return idSucursal;
     }
 
-    public void setIdSucursal(Long idSucursal) {
+    public void setIdSucursal(String idSucursal) {
         this.idSucursal = idSucursal;
     }
 

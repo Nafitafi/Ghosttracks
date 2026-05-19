@@ -28,7 +28,7 @@ import java.util.List;
  */
 public class ControlVentaEnLinea {
     
-    private final Navegador navegador;
+private final Navegador navegador;
     private final IVentaEnLinea ventaFachada = new VentaEnLineaFachada();
  
     private CarritoDTO carrito;
@@ -176,7 +176,7 @@ public class ControlVentaEnLinea {
         }
     }
  
-    public void eliminarProductoCarrito(Long idProducto) {
+    public void eliminarProductoCarrito(String idProducto) {
         try {
             this.carrito = ventaFachada.eliminarDelCarrito(this.carrito, idProducto);
         } catch (VentaEnLineaException ex) {

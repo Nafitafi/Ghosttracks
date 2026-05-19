@@ -60,10 +60,8 @@ public class OrdenesBO implements IOrdenesBO {
         if (dto.getProductos() == null || dto.getProductos().isEmpty()) {
             throw new NegocioException("La orden debe incluir al menos un producto.");
         }
-        if (dto.getFechaEntregaEstimada() == null) {
-            throw new NegocioException("La fecha de entrega estimada es obligatoria.");
-        }
-        if (dto.getFechaEntregaEstimada().isBefore(LocalDate.now())) {
+        LocalDate fechaEstimada = obtenerFechaEstimada(dto);
+        if (fechaEstimada.isBefore(LocalDate.now())) {
             throw new NegocioException("La fecha estimada no puede ser anterior a hoy.");
         }
         for (ProductoOrdenDTO item : dto.getProductos()) {
@@ -78,38 +76,7 @@ public class OrdenesBO implements IOrdenesBO {
     public OrdenDTO procesarNuevaOrden(NuevaOrdenDTO dto) throws NegocioException {
         validarDatosOrden(dto);
 
-        Orden orden = new Orden();
-        orden.setFolio(generarFolio());
-        orden.setFecha(LocalDateTime.now());
-        orden.setFechaSolicitud(LocalDateTime.now());
-        orden.setFechaEntregaEstimada(dto.getFechaEntregaEstimada());
-        orden.setComentarios(dto.getComentarios());
-        orden.setTipoOrden(TipoOrden.valueOf(dto.getTipoOrden().name()));
-        orden.setEstado(EstadoOrden.CONFIRMADO);
-        orden.setProveedor(new ProveedorRef(
-                dto.getProveedor().getIdProveedor(),
-                dto.getProveedor().getNombreProveedor()));
-        orden.setSucursal(new SucursalRef(
-                dto.getSucursal().getIdSucursal() != null ? String.valueOf(dto.getSucursal().getIdSucursal()) : null,
-                dto.getSucursal().getNombre()));
-
-        List<ProductoOrden> productosOrden = new ArrayList<>();
-        double total = 0.0;
-        for (ProductoOrdenDTO item : dto.getProductos()) {
-            ProductoOrden po = new ProductoOrden();
-            po.setCantidadProducto(item.getCantidadProducto());
-            po.setPrecioUnitario(item.getPrecioUnitario());
-            po.setImporteTotal(item.getImporteTotal());
-            po.setRecibido(false);
-            if (item.getProducto() != null) {
-                po.setIdProducto(item.getProducto().getIdProducto());
-            }
-            total += item.getImporteTotal();
-            productosOrden.add(po);
-        }
-        orden.setProductosOrden(productosOrden);
-        orden.setTotal(total);
-
+        Orden orden = OrdenMapper.toEntidad(dto, generarFolio());
         try {
             Orden guardada = persistencia.insertarOrden(orden);
             return OrdenMapper.toDTO(guardada, ordenFactory);
@@ -119,8 +86,8 @@ public class OrdenesBO implements IOrdenesBO {
     }
 
     @Override
-    public void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException {
-        if (idOrden == null || nuevoEstado == null) {
+    public void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException {
+        if (idOrden == null || idOrden.isBlank() || nuevoEstado == null) {
             throw new NegocioException("El identificador y el estado son obligatorios.");
         }
         try {
@@ -142,7 +109,7 @@ public class OrdenesBO implements IOrdenesBO {
     }
 
     @Override
-    public OrdenDTO obtenerOrdenPorId(Long idOrden) throws NegocioException {
+    public OrdenDTO obtenerOrdenPorId(String idOrden) throws NegocioException {
         try {
             return OrdenMapper.toDTO(persistencia.obtenerOrdenPorId(idOrden), ordenFactory);
         } catch (PersistenciaException ex) {
@@ -151,12 +118,22 @@ public class OrdenesBO implements IOrdenesBO {
     }
 
     @Override
-    public OrdenDTO confirmarRecepcion(Long idOrden, byte[] imagen) throws NegocioException {
+    public OrdenDTO confirmarRecepcion(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws NegocioException {
+        if (idOrden == null || idOrden.isBlank()) {
+            throw new NegocioException("El identificador de la orden es obligatorio.");
+        }
+        if (imagen == null || imagen.length == 0) {
+            throw new NegocioException("Debe cargar una imagen como evidencia de recepcion.");
+        }
+        if (productosRecibidos == null || productosRecibidos.isEmpty()) {
+            throw new NegocioException("Debe confirmar al menos un producto recibido.");
+        }
         try {
             Orden orden = persistencia.obtenerOrdenPorId(idOrden);
             orden.setImagen(imagen);
             orden.setFechaEntrega(LocalDateTime.now());
             orden.setEstado(EstadoOrden.RECIBIDO);
+            aplicarProductosRecibidos(orden.getProductosOrden(), productosRecibidos);
             Orden actualizada = persistencia.actualizarOrden(orden);
             return OrdenMapper.toDTO(actualizada, ordenFactory);
         } catch (PersistenciaException ex) {
@@ -164,7 +141,25 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    private void aplicarProductosRecibidos(List<ProductoOrden> productosOrden, List<ProductoOrdenDTO> productosRecibidos) {
+        if (productosOrden == null) {
+            return;
+        }
+        for (int i = 0; i < productosOrden.size(); i++) {
+            ProductoOrdenDTO productoRecibido = productosRecibidos.size() > i ? productosRecibidos.get(i) : null;
+            productosOrden.get(i).setRecibido(productoRecibido != null && productoRecibido.isRecibido());
+        }
+    }
+
     private String generarFolio() {
         return "GT-ORD-" + UUID.randomUUID().toString().substring(0, 8).toUpperCase();
+    }
+
+    private LocalDate obtenerFechaEstimada(NuevaOrdenDTO dto) {
+        if (dto.getFechaEntregaEstimada() != null) {
+            return dto.getFechaEntregaEstimada();
+        }
+        LocalDateTime fechaSolicitud = dto.getFechaSolicitud() != null ? dto.getFechaSolicitud() : LocalDateTime.now();
+        return fechaSolicitud.toLocalDate().plusDays(10);
     }
 }

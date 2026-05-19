@@ -97,10 +97,10 @@
       <SubComponents>
         <Component class="javax.swing.JLabel" name="lblRegistroSalida">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Registro de salidas de mercanc&#xed;a"/>
             <Property name="font" type="java.awt.Font" editor="org.netbeans.beaninfo.editors.FontEditor">
               <Font name="Corbel" size="36" style="1"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Registro de salidas de mercanc&#xed;a"/>
           </Properties>
         </Component>
         <Component class="javax.swing.JComboBox" name="cbxRazon">
@@ -120,7 +120,7 @@
             </Property>
           </Properties>
           <AuxValues>
-            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;String&gt;"/>
+            <AuxValue name="JavaCodeGenerator_TypeParameters" type="java.lang.String" value="&lt;Object&gt;"/>
           </AuxValues>
         </Component>
         <Component class="com.github.lgooddatepicker.components.DatePicker" name="dtpFechaInicio">
@@ -143,14 +143,17 @@
         </Component>
         <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnFiltrar">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Filtrar salidas"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="2b" green="40" red="bf" type="rgb"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Filtrar salidas"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnFiltrarActionPerformed"/>
+          </Events>
         </Component>
         <Container class="javax.swing.JScrollPane" name="jScrollPane1">
 
@@ -175,25 +178,31 @@
         </Container>
         <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnRegistrarSalida">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Registrar salida nueva"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="2b" green="40" red="bf" type="rgb"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Registrar salida nueva"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnRegistrarSalidaActionPerformed"/>
+          </Events>
         </Component>
         <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnGenerarPDF">
           <Properties>
+            <Property name="text" type="java.lang.String" value="Generar PDF"/>
             <Property name="background" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="2b" green="40" red="bf" type="rgb"/>
             </Property>
             <Property name="foreground" type="java.awt.Color" editor="org.netbeans.beaninfo.editors.ColorEditor">
               <Color blue="ff" green="ff" red="ff" type="rgb"/>
             </Property>
-            <Property name="text" type="java.lang.String" value="Generar PDF"/>
           </Properties>
+          <Events>
+            <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnGenerarPDFActionPerformed"/>
+          </Events>
         </Component>
       </SubComponents>
     </Container>

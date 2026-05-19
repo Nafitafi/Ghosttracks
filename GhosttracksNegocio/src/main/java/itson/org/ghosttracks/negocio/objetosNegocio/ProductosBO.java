@@ -4,14 +4,14 @@
  */
 package itson.org.ghosttracks.negocio.objetosNegocio;
 
-import itson.org.ghosttracks.daos.IProductosDAO;
 import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.entidades.Producto;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
-import itson.org.ghosttracks.mocks.ProductosMockDAO;
+import itson.org.ghosttracks.fachada.IPersistenciaAbastecimiento;
+import itson.org.ghosttracks.fachada.PersistenciaFachada;
 import itson.org.ghosttracks.negocio.interfaces.IProductosBO;
+import itson.org.ghosttracks.negocio.mappers.ProductoMapper;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -20,25 +20,32 @@ import java.util.List;
  */
 public class ProductosBO implements IProductosBO {
 
-    private final IProductosDAO productosDAO;
+    private final IPersistenciaAbastecimiento persistencia;
 
     public ProductosBO() {
-        this.productosDAO = new ProductosMockDAO();
+        this.persistencia = new PersistenciaFachada();
     }
 
     @Override
     public List<Producto> obtenerTodos() throws NegocioException {
         try {
-            return productosDAO.obtenerTodos();
+            return persistencia.obtenerProductos();
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al consultar productos en BD", e);
         }
     }
 
     @Override
-    public Producto obtenerProductoPorId(Long id) throws NegocioException {
+    public List<ProductoDTO> obtenerProductosDisponibles() throws NegocioException {
+        return obtenerTodos().stream()
+                .map(ProductoMapper::toDTO)
+                .toList();
+    }
+
+    @Override
+    public Producto obtenerProductoPorId(String id) throws NegocioException {
         try {
-            return productosDAO.buscarPorId(id);
+            return persistencia.obtenerProductoPorId(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al buscar el producto", e);
         }

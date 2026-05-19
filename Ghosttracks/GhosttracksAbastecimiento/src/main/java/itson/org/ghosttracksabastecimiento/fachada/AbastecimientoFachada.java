@@ -5,11 +5,25 @@
 package itson.org.ghosttracksabastecimiento.fachada;
 
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
+import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
+import itson.org.ghosttracks.dtos.ProveedorDTO;
+import itson.org.ghosttracks.dtos.SalidaDTO;
+import itson.org.ghosttracks.dtos.SucursalDTO;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.negocio.interfaces.IOrdenesBO;
+import itson.org.ghosttracks.negocio.interfaces.IProductosBO;
+import itson.org.ghosttracks.negocio.interfaces.IProveedoresBO;
+import itson.org.ghosttracks.negocio.interfaces.ISalidasBO;
+import itson.org.ghosttracks.negocio.interfaces.ISucursalesBO;
 import itson.org.ghosttracks.negocio.objetosNegocio.Excepciones.NegocioException;
 import itson.org.ghosttracks.negocio.objetosNegocio.OrdenesBO;
+import itson.org.ghosttracks.negocio.objetosNegocio.ProductosBO;
+import itson.org.ghosttracks.negocio.objetosNegocio.ProveedoresBO;
+import itson.org.ghosttracks.negocio.objetosNegocio.SalidasBO;
+import itson.org.ghosttracks.negocio.objetosNegocio.SucursalesBO;
 import itson.org.ghosttracksabastecimiento.excepciones.AbastecimientoException;
 import itson.org.ghosttracksabastecimiento.excepciones.CodigoErrorAbastecimiento;
 import java.util.List;
@@ -18,12 +32,20 @@ import java.util.List;
  *
  * @author nafbr
  */
-public class AbastecimientoFachada implements IAbastecimiento{
+public class AbastecimientoFachada implements IAbastecimiento {
 
     private final IOrdenesBO ordenesBO;
+    private final IProveedoresBO proveedoresBO;
+    private final ISalidasBO salidasBO;
+    private final ISucursalesBO sucursalesBO;
+    private final IProductosBO productosBO;
 
     public AbastecimientoFachada() {
         this.ordenesBO = new OrdenesBO();
+        this.proveedoresBO = new ProveedoresBO();
+        this.salidasBO = new SalidasBO();
+        this.sucursalesBO = new SucursalesBO();
+        this.productosBO = new ProductosBO();
     }
 
     @Override
@@ -36,8 +58,8 @@ public class AbastecimientoFachada implements IAbastecimiento{
     }
 
     @Override
-    public OrdenDTO obtenerOrdenPorId(Long idOrden) throws AbastecimientoException {
-        if (idOrden == null || idOrden <= 0) {
+    public OrdenDTO obtenerOrdenPorId(String idOrden) throws AbastecimientoException {
+        if (idOrden == null || idOrden.isBlank()) {
             throw new AbastecimientoException(CodigoErrorAbastecimiento.DATOS_INVALIDOS, "ID de orden inválido.");
         }
         try {
@@ -57,7 +79,7 @@ public class AbastecimientoFachada implements IAbastecimiento{
     }
 
     @Override
-    public void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException {
+    public void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException {
         try {
             ordenesBO.actualizarEstadoOrden(idOrden, nuevoEstado);
         } catch (NegocioException ex) {
@@ -66,11 +88,56 @@ public class AbastecimientoFachada implements IAbastecimiento{
     }
 
     @Override
-    public OrdenDTO confirmarRecepcionOrden(Long idOrden, byte[] imagen) throws AbastecimientoException {
+    public OrdenDTO confirmarRecepcionOrden(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws AbastecimientoException {
         try {
-            return ordenesBO.confirmarRecepcion(idOrden, imagen);
+            return ordenesBO.confirmarRecepcion(idOrden, imagen, productosRecibidos);
         } catch (NegocioException ex) {
             throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al confirmar la recepción.", ex);
+        }
+    }
+
+    @Override
+    public List<ProveedorDTO> obtenerTodosLosProveedores() throws AbastecimientoException {
+        try {
+            return proveedoresBO.obtenerTodos();
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener proveedores.", ex);
+        }
+    }
+
+    @Override
+    public List<SucursalDTO> obtenerTodasLasSucursales() throws AbastecimientoException {
+        try {
+            return sucursalesBO.obtenerTodos();
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener sucursales.", ex);
+        }
+    }
+
+    @Override
+    public List<ProductoDTO> obtenerProductosDisponibles() throws AbastecimientoException {
+        try {
+            return productosBO.obtenerProductosDisponibles();
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener productos.", ex);
+        }
+    }
+
+    @Override
+    public SalidaDTO registrarNuevaSalida(NuevaSalidaDTO dto) throws AbastecimientoException {
+        try {
+            return salidasBO.registrarSalida(dto);
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.DATOS_INVALIDOS, ex.getMessage(), ex);
+        }
+    }
+
+    @Override
+    public List<SalidaDTO> obtenerTodasLasSalidas() throws AbastecimientoException {
+        try {
+            return salidasBO.obtenerSalidas();
+        } catch (NegocioException ex) {
+            throw new AbastecimientoException(CodigoErrorAbastecimiento.ERROR_PERSISTENCIA, "Error al obtener salidas.", ex);
         }
     }
 }

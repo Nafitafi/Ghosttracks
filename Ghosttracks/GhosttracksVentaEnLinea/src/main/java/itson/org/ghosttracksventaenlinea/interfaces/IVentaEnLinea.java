@@ -7,7 +7,6 @@ package itson.org.ghosttracksventaenlinea.interfaces;
 import itson.org.ghosttracks.dtos.CarritoDTO;
 import itson.org.ghosttracks.dtos.ClienteDTO;
 import itson.org.ghosttracks.dtos.NuevoPedidoDTO;
-import itson.org.ghosttracks.dtos.PaqueteDTO;
 import itson.org.ghosttracks.dtos.PedidoDTO;
 import itson.org.ghosttracks.dtos.ProductoDTO;
 import itson.org.ghosttracks.enums.EstadoPedidoDTO;
@@ -24,7 +23,7 @@ public interface IVentaEnLinea {
     
     List<ProductoDTO> obtenerCatalogo() throws VentaEnLineaException;
 
-    ProductoDTO consultarDetalleProducto(Long id) throws VentaEnLineaException;
+    ProductoDTO consultarDetalleProducto(String id) throws VentaEnLineaException;
 
     ClienteDTO consultarPerfilCliente(Long idCliente) throws VentaEnLineaException;
     
@@ -34,7 +33,7 @@ public interface IVentaEnLinea {
     
     PedidoDTO actualizarEstadoPedido(Long idPedido, EstadoPedidoDTO nuevoEstado) throws VentaEnLineaException;
     
-    CarritoDTO eliminarDelCarrito(CarritoDTO carrito, Long idProducto) throws VentaEnLineaException;
+    CarritoDTO eliminarDelCarrito(CarritoDTO carrito, String idProducto) throws VentaEnLineaException;
     
     List<PedidoDTO> obtenerTodosLosPedidos() throws VentaEnLineaException;
     

@@ -1,15 +1,82 @@
 package itson.org.ghosttracks.presentacion.administrador;
 
+import itson.org.ghosttracks.controladores.ControlAbastecimiento;
+import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
+import java.io.File;
+import java.io.IOException;
+import java.nio.file.Files;
+import java.util.ArrayList;
+import java.util.List;
+import javax.swing.JFileChooser;
+import javax.swing.JOptionPane;
+import javax.swing.filechooser.FileNameExtensionFilter;
+import javax.swing.table.DefaultTableModel;
+
 /**
  *
  * @author nafbr
  */
 public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
 
+    private ControlAbastecimiento controlador;
+    private OrdenDTO orden;
+    private byte[] imagenRecepcion;
+    private final List<ProductoOrdenDTO> productosOrden = new ArrayList<>();
+    
     public PantallaConfirmacionRecepcion() {
         initComponents();
     }
 
+    public void setControlador(ControlAbastecimiento controlador) {
+        this.controlador = controlador;
+    }
+
+    public void cargarOrden(OrdenDTO orden) {
+        this.orden = orden;
+        this.productosOrden.clear();
+        if (orden == null) {
+            return;
+        }
+
+        lblFechaOrdenDisplay.setText(orden.getFechaSolicitud() != null ? orden.getFechaSolicitud().toLocalDate().toString() : "NA");
+        lblFechaEntregaDisplay.setText(orden.getFechaEntregaEst() != null ? orden.getFechaEntregaEst().toString() : "NA");
+        lblFolioDisplay.setText(texto(orden.getFolio()));
+        lblTipoOrdenDisplay.setText(orden.getTipoOrden() != null ? orden.getTipoOrden().toString() : "NA");
+        lblSucursalDisplay.setText(orden.getSucursal() != null ? texto(orden.getSucursal().getNombre()) : "NA");
+        lblProveedorDisplay.setText(orden.getProveedor() != null ? texto(orden.getProveedor().getNombreProveedor()) : "NA");
+        txtaComentariosDisplay.setText(texto(orden.getComentarios()));
+
+        DefaultTableModel modelo = (DefaultTableModel) tblProductosOrden.getModel();
+        modelo.setRowCount(0);
+        if (orden.getProductosOrden() != null) {
+            for (ProductoOrdenDTO productoOrden : orden.getProductosOrden()) {
+                productosOrden.add(productoOrden);
+                ProductoDTO producto = productoOrden.getProducto();
+                modelo.addRow(new Object[]{
+                    producto != null ? producto.getIdProducto() : "NA",
+                    producto != null ? texto(producto.getNombre()) : "NA",
+                    productoOrden.getCantidadProducto(),
+                    String.format("$%.2f", productoOrden.getImporteTotal()),
+                    productoOrden.isRecibido()
+                });
+            }
+        }
+    }
+
+    private String texto(String valor) {
+        return valor != null && !valor.isBlank() ? valor : "NA";
+    }
+    
+    private List<ProductoOrdenDTO> leerProductosRecibidos() {
+        DefaultTableModel modelo = (DefaultTableModel) tblProductosOrden.getModel();
+        for (int i = 0; i < modelo.getRowCount() && i < productosOrden.size(); i++) {
+            productosOrden.get(i).setRecibido(Boolean.TRUE.equals(modelo.getValueAt(i, 4)));
+        }
+        return new ArrayList<>(productosOrden);
+    }
+    
     @SuppressWarnings("unchecked")
     // <editor-fold defaultstate="collapsed" desc="Generated Code">//GEN-BEGIN:initComponents
     private void initComponents() {
@@ -115,6 +182,7 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
         btnAgregarImagen.setBackground(new java.awt.Color(191, 64, 43));
         btnAgregarImagen.setForeground(new java.awt.Color(255, 255, 255));
         btnAgregarImagen.setText("Agregar imagen de recepción");
+        btnAgregarImagen.addActionListener(this::btnAgregarImagenActionPerformed);
 
         javax.swing.GroupLayout panelRedondeado1Layout = new javax.swing.GroupLayout(panelRedondeado1);
         panelRedondeado1.setLayout(panelRedondeado1Layout);
@@ -257,12 +325,42 @@ public class PantallaConfirmacionRecepcion extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        // TODO add your handling code here:
+        if (controlador != null) {
+            controlador.volverAOrdenes();
+        }
     }//GEN-LAST:event_btnVolverActionPerformed
 
     private void btnConfirmarRecepcionActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnConfirmarRecepcionActionPerformed
-        // TODO add your handling code here:
+        if (controlador == null || orden == null) {
+            return;
+        }
+        List<ProductoOrdenDTO> productosActualizados = leerProductosRecibidos();
+        boolean hayProductoRecibido = productosActualizados.stream().anyMatch(ProductoOrdenDTO::isRecibido);
+        if (!hayProductoRecibido) {
+            JOptionPane.showMessageDialog(this, "Marca al menos un producto como recibido.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        if (imagenRecepcion == null || imagenRecepcion.length == 0) {
+            JOptionPane.showMessageDialog(this, "Agrega una imagen de recepcion antes de confirmar.", "Validacion", JOptionPane.WARNING_MESSAGE);
+            return;
+        }
+        controlador.confirmarRecepcionOrden(orden, imagenRecepcion, productosActualizados);
     }//GEN-LAST:event_btnConfirmarRecepcionActionPerformed
+
+    private void btnAgregarImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnAgregarImagenActionPerformed
+        JFileChooser selector = new JFileChooser();
+        selector.setFileFilter(new FileNameExtensionFilter("Imagenes", "jpg", "jpeg", "png", "bmp", "gif"));
+        if (selector.showOpenDialog(this) != JFileChooser.APPROVE_OPTION) {
+            return;
+        }
+        File archivo = selector.getSelectedFile();
+        try {
+            imagenRecepcion = Files.readAllBytes(archivo.toPath());
+            btnAgregarImagen.setText("Imagen cargada: " + archivo.getName());
+        } catch (IOException ex) {
+            JOptionPane.showMessageDialog(this, "No se pudo leer la imagen seleccionada.", "Error", JOptionPane.ERROR_MESSAGE);
+        }
+    }//GEN-LAST:event_btnAgregarImagenActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnAgregarImagen;

@@ -10,7 +10,7 @@ import itson.org.ghosttracks.entidades.Producto;
  */
 public class ProductoAProductoDTOAdapter {
     
-    public static ProductoDTO adapt(Producto producto) {
+     public static ProductoDTO adapt(Producto producto) {
         
         ProductoDTO productoDTO = new ProductoDTO( 
                 producto.getIdProducto(), 

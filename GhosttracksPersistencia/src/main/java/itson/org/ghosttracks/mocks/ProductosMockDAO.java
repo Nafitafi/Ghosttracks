@@ -16,11 +16,10 @@ import java.util.logging.Logger;
  * @author emyla
  */
 public class ProductosMockDAO implements IProductosDAO {
-
-    private static final Logger LOGGER = Logger.getLogger(ProductosMockDAO.class.getName());
+ private static final Logger LOGGER = Logger.getLogger(ProductosMockDAO.class.getName());
     
     private List<Producto> productosDB;
-    private Long contadorId = 1L;
+    private long contadorId = 1L;
 
     public ProductosMockDAO() {
         this.productosDB = new ArrayList<>();
@@ -34,7 +33,7 @@ public class ProductosMockDAO implements IProductosDAO {
         
         //PRODUCTO 1 
         Producto producto1 = new Producto(
-                1L,                       
+                "1",                       
                 "Abbey Road",             
                 "AbbeyRoad.png",         
                 TipoProducto.VINILO,       
@@ -50,7 +49,7 @@ public class ProductosMockDAO implements IProductosDAO {
 
         // PRODUCTO 2
         Producto producto2 = new Producto(
-                2L, 
+                "2", 
                 "Thriller", 
                 "Thriller.png", 
                 TipoProducto.CD,         
@@ -66,7 +65,7 @@ public class ProductosMockDAO implements IProductosDAO {
 
         //PRODUCTO 3
         Producto producto3 = new Producto(
-                3L, 
+                "3", 
                 "Breach", 
                 "JoshDun.png", 
                 TipoProducto.CASSETTE,    
@@ -83,7 +82,7 @@ public class ProductosMockDAO implements IProductosDAO {
         contadorId++;
         
         Producto producto4 = new Producto(
-                4L,                       
+                "4",                       
                 "Who Really Cares?",             
                 "TvGirl.png",         
                 TipoProducto.VINILO,       
@@ -100,7 +99,7 @@ public class ProductosMockDAO implements IProductosDAO {
         contadorId++;
         
         Producto producto5 = new Producto(
-                5L,                       
+                "5",                       
                 "Chromakopia",             
                 "Chromakopia.png",         
                 TipoProducto.CD,       
@@ -129,7 +128,7 @@ public class ProductosMockDAO implements IProductosDAO {
     }
     
     @Override
-    public Producto buscarPorId(Long idProducto) throws PersistenciaException {
+    public Producto buscarPorId(String idProducto) throws PersistenciaException {
         if (idProducto == null) {
             throw new PersistenciaException("El ID del producto a buscar no puede ser nulo");
         }
@@ -162,7 +161,7 @@ public class ProductosMockDAO implements IProductosDAO {
 
         try {
             Producto nuevaEntidad = new Producto(
-            contadorId++, 
+            String.valueOf(contadorId++), 
             productoDTO.getNombre(),
             productoDTO.getImgProducto(),
             productoDTO.getTipoProducto(),
@@ -182,5 +181,4 @@ public class ProductosMockDAO implements IProductosDAO {
             throw new PersistenciaException("No se pudo guardar el producto debido a un error interno.", e);
         }
     }
-    
 }

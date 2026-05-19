@@ -4,8 +4,38 @@
  */
 package itson.org.ghosttracks.controladores;
 
+import com.itextpdf.text.Chunk;
+import com.itextpdf.text.Document;
+import com.itextpdf.text.DocumentException;
+import com.itextpdf.text.FontFactory;
+import com.itextpdf.text.PageSize;
+import com.itextpdf.text.Paragraph;
+import com.itextpdf.text.pdf.PdfWriter;
+import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
+import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
+import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoSalidaDTO;
+import itson.org.ghosttracks.dtos.ProveedorDTO;
+import itson.org.ghosttracks.dtos.SalidaDTO;
+import itson.org.ghosttracks.dtos.SucursalDTO;
+import itson.org.ghosttracks.enums.EstadoOrdenDTO;
+import itson.org.ghosttracks.enums.RazonSalidaDTO;
+import itson.org.ghosttracks.enums.TipoOrdenDTO;
+import itson.org.ghosttracks.factory.IOrdenDTOFactory;
+import itson.org.ghosttracks.factory.OrdenDTOFactory;
+import itson.org.ghosttracks.presentacion.administrador.PantallaNuevaOrdenProveedor;
+import itson.org.ghosttracks.presentacion.administrador.PantallaNuevaSalida;
+import itson.org.ghosttracks.presentacion.administrador.PantallaOrdenesProveedores;
+import itson.org.ghosttracks.presentacion.administrador.PantallaSalidas;
+import itson.org.ghosttracksabastecimiento.excepciones.AbastecimientoException;
 import itson.org.ghosttracksabastecimiento.fachada.AbastecimientoFachada;
 import itson.org.ghosttracksabastecimiento.fachada.IAbastecimiento;
+import java.io.IOException;
+import java.time.LocalDate;
+import java.util.List;
+import javax.swing.JTable;
 
 /**
  *
@@ -14,10 +44,15 @@ import itson.org.ghosttracksabastecimiento.fachada.IAbastecimiento;
 public class ControlAbastecimiento {
 
     private final Navegador navegador;
-    private final IAbastecimiento abastecimientoFachada = new AbastecimientoFachada();
+    private final IAbastecimiento abastecimientoFachada;
+    private final ReportePdfExporter reportePdfExporter;
+    private final IOrdenDTOFactory ordenDTOFactory;
 
     public ControlAbastecimiento(Navegador navegador) {
         this.navegador = navegador;
+        this.abastecimientoFachada = new AbastecimientoFachada();
+        this.reportePdfExporter = new ReportePdfExporter();
+        this.ordenDTOFactory = new OrdenDTOFactory();
     }
 
     public void irAInicio() {
@@ -28,64 +63,222 @@ public class ControlAbastecimiento {
         navegador.irFormularioNuevaOrden();
     }
 
+    public void irAAgregarSalidaNueva() {
+        navegador.irFormularioNuevaSalida();
+    }
+
     public void inicializarFiltrosYTabla(PantallaOrdenesProveedores vista) {
         try {
-            // Carga dinámica de listas desde persistencia
             List<ProveedorDTO> proveedores = abastecimientoFachada.obtenerTodosLosProveedores();
             List<OrdenDTO> ordenes = abastecimientoFachada.obtenerTodasLasOrdenes();
-
-            // Inyectar colecciones al modelo de la vista
-            vista.configurarComponentesDinamicos(proveedores, List.of(EstadoOrdenDTO.values()), List.of(TipoOrden.values()));
+            vista.configurarComponentesDinamicos(proveedores, List.of(EstadoOrdenDTO.values()), List.of(TipoOrdenDTO.values()));
             vista.llenarTabla(ordenes);
         } catch (AbastecimientoException ex) {
-            navegador.mostrarMensaje("Error al inicializar el catálogo de abastecimiento.", true);
+            navegador.mostrarMensaje("Error al inicializar el catalogo de abastecimiento.", true);
         }
     }
 
-    public void filtrarOrdenes(PantallaOrdenesProveedores vista, Object proveedorSel, Object estadoSel, Object tipoSel, LocalDate inicio, LocalDate fin) {
+    public void filtrarOrdenes(PantallaOrdenesProveedores vista, Object proveedorSel, Object estadoSel,
+            Object tipoSel, LocalDate inicio, LocalDate fin) {
         try {
-            List<OrdenDTO> todas = abastecimientoFachada.obtenerTodasLasOrdenes();
-
-            List<OrdenDTO> filtradas = todas.stream().filter(o -> {
-                // Filtro Dinámico de Proveedor
-                if (proveedorSel instanceof ProveedorDTO prov) {
-                    if (o.getProveedor() == null || !o.getProveedor().getIdProveedor().equals(prov.getIdProveedor())) {
-                        return false;
-                    }
-                }
-                // Filtro de Estado de Orden
-                if (estadoSel instanceof EstadoOrdenDTO estado) {
-                    if (o.getEstado() != estado) {
-                        return false;
-                    }
-                }
-                // Filtro de Tipo de Orden
-                if (tipoSel instanceof TipoOrden tipo) {
-                    if (o.getTipoOrden() != tipo) {
-                        return false;
-                    }
-                }
-                // Filtro por Fechas
-                if (inicio != null && (o.getFechaEntregaEstimada() == null || o.getFechaEntregaEstimada().isBefore(inicio))) {
-                    return false;
-                }
-                if (fin != null && (o.getFechaEntregaEstimada() == null || o.getFechaEntregaEstimada().isAfter(fin))) {
-                    return false;
-                }
-                return true;
-            }).toList();
-
+            List<OrdenDTO> filtradas = abastecimientoFachada.obtenerTodasLasOrdenes().stream()
+                    .filter(orden -> coincideOrden(orden, proveedorSel, estadoSel, tipoSel, inicio, fin))
+                    .toList();
             vista.llenarTabla(filtradas);
         } catch (AbastecimientoException ex) {
             navegador.mostrarMensaje("Error al procesar el filtrado de datos.", true);
         }
     }
 
-    public void generarReportePDF(List<OrdenDTO> ordenes) {
-        if (ordenes == null || ordenes.isEmpty()) {
+    public void imprimirTabla(JTable tabla, String titulo) {
+        exportarReporteIndividual(tabla, titulo);
+    }
+
+    public void exportarReporteAgrupado(JTable tabla, String titulo, String filtros) {
+        exportarTablaAPdf(tabla, titulo, filtros, true);
+    }
+
+    public void exportarReporteIndividual(JTable tabla, String titulo) {
+        exportarTablaAPdf(tabla, titulo, null, false);
+    }
+
+    public void inicializarFiltrosYTablaSalidas(PantallaSalidas vista) {
+        try {
+            vista.configurarComponentesDinamicos(List.of(RazonSalidaDTO.values()));
+            vista.llenarTabla(abastecimientoFachada.obtenerTodasLasSalidas());
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje("Error al inicializar el registro de salidas.", true);
+        }
+    }
+
+    public void filtrarSalidas(PantallaSalidas vista, Object razonSel, LocalDate inicio, LocalDate fin) {
+        try {
+            List<SalidaDTO> filtradas = abastecimientoFachada.obtenerTodasLasSalidas().stream()
+                    .filter(salida -> coincideSalida(salida, razonSel, inicio, fin))
+                    .toList();
+            vista.llenarTabla(filtradas);
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje("Error al filtrar salidas.", true);
+        }
+    }
+
+    public void verDetalleSalida(SalidaDTO salida) {
+        navegador.irRegistroSalida(salida);
+    }
+
+    public void verDetalleOrden(OrdenDTO orden) {
+        navegador.irResumenOrden(orden);
+    }
+
+    public void confirmarOrden(OrdenDTO orden) {
+        confirmarOrden(orden, null);
+    }
+
+    public void confirmarOrden(OrdenDTO orden, PantallaOrdenesProveedores vista) {
+        if (orden != null) {
+            navegador.irConfirmacionRecepcion(orden);
+        }
+    }
+
+    public void confirmarRecepcionOrden(OrdenDTO orden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) {
+        if (orden == null) {
+            navegador.mostrarMensaje("No hay una orden seleccionada.", true);
+            return;
+        }
+        try {
+            abastecimientoFachada.confirmarRecepcionOrden(orden.getIdOrden(), imagen, productosRecibidos);
+            navegador.mostrarMensaje("Recepcion de orden confirmada.", false);
+            navegador.irOrdenesProveedores();
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje(mensajeError(ex, "No se pudo confirmar la orden."), true);
+        }
+    }
+
+    public void cancelarOrden(OrdenDTO orden, PantallaOrdenesProveedores vista) {
+        if (orden == null) {
+            navegador.mostrarMensaje("No hay una orden seleccionada.", true);
+            return;
+        }
+        try {
+            abastecimientoFachada.actualizarEstadoOrden(orden.getIdOrden(), EstadoOrdenDTO.CANCELADO);
+            vista.llenarTabla(abastecimientoFachada.obtenerTodasLasOrdenes());
+            navegador.mostrarMensaje("Orden cancelada.", false);
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje("No se pudo cancelar la orden.", true);
+        }
+    }
+
+    public void inicializarFormularioNuevaOrden(PantallaNuevaOrdenProveedor vista) {
+        try {
+            List<ProveedorDTO> proveedores = abastecimientoFachada.obtenerTodosLosProveedores();
+            List<SucursalDTO> sucursales = abastecimientoFachada.obtenerTodasLasSucursales();
+            List<ProductoDTO> productos = abastecimientoFachada.obtenerProductosDisponibles();
+            vista.configurarComponentesDinamicos(proveedores, sucursales, List.of(TipoOrdenDTO.values()));
+            vista.cargarProductosDisponibles(productos);
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje("Error al cargar datos para la nueva orden.", true);
+        }
+    }
+
+    public List<ProductoDTO> obtenerProductosDisponibles() throws AbastecimientoException {
+        return abastecimientoFachada.obtenerProductosDisponibles();
+    }
+
+    public void registrarOrdenNueva(PantallaNuevaOrdenProveedor vista, ProveedorDTO proveedor, SucursalDTO sucursal,
+            TipoOrdenDTO tipoOrden, LocalDate fechaEstimada, String comentarios, List<ProductoOrdenDTO> productos) {
+        try {
+            OrdenDTO ordenRegistrada = abastecimientoFachada.registrarNuevaOrden(
+                    ordenDTOFactory.crearNuevaOrden(proveedor, sucursal, productos, comentarios, fechaEstimada, tipoOrden));
+            navegador.mostrarMensaje("Orden " + ordenRegistrada.getFolio() + " registrada correctamente.", false);
+            navegador.irOrdenesProveedores();
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje(mensajeError(ex, "No se pudo registrar la orden."), true);
+        }
+    }
+
+    public void inicializarFormularioNuevaSalida(PantallaNuevaSalida vista) {
+        try {
+            vista.configurarComponentesDinamicos(abastecimientoFachada.obtenerTodasLasSucursales(), List.of(RazonSalidaDTO.values()));
+            vista.cargarProductosDisponibles(abastecimientoFachada.obtenerProductosDisponibles());
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje("Error al cargar datos para la salida.", true);
+        }
+    }
+
+    public void registrarSalidaNueva(SucursalDTO sucursal, RazonSalidaDTO razon, String comentarios,
+            List<ProductoSalidaDTO> productos) {
+        try {
+            SalidaDTO salida = abastecimientoFachada.registrarNuevaSalida(nuevaSalidaDTO(sucursal, razon, comentarios, productos));
+            navegador.mostrarMensaje("Salida " + salida.getFolio() + " registrada correctamente.", false);
+            navegador.irSalidas();
+        } catch (AbastecimientoException ex) {
+            navegador.mostrarMensaje(mensajeError(ex, "No se pudo registrar la salida."), true);
+        }
+    }
+
+    public void volverAOrdenes() {
+        navegador.irOrdenesProveedores();
+    }
+
+    public void volverASalidas() {
+        navegador.irSalidas();
+    }
+
+    private void exportarTablaAPdf(JTable tabla, String titulo, String filtros, boolean incluirFiltros) {
+        if (tabla == null || tabla.getRowCount() == 0) {
             navegador.mostrarMensaje("No hay datos disponibles en la tabla para exportar.", true);
             return;
         }
-        navegador.mostrarMensaje("Reporte PDF generado exitosamente.", false);
+
+        try {
+            if (reportePdfExporter.exportarTabla(tabla, titulo, filtros, incluirFiltros)) {
+                navegador.mostrarMensaje("Reporte PDF guardado correctamente.", false);
+            }
+        } catch (DocumentException | IOException ex) {
+            navegador.mostrarMensaje("No se pudo guardar el reporte PDF.", true);
+        }
+    }
+
+    private boolean coincideOrden(OrdenDTO orden, Object proveedorSel, Object estadoSel, Object tipoSel,
+            LocalDate inicio, LocalDate fin) {
+        if (proveedorSel instanceof ProveedorDTO proveedor
+                && (orden.getProveedor() == null || !orden.getProveedor().getIdProveedor().equals(proveedor.getIdProveedor()))) {
+            return false;
+        }
+        if (estadoSel instanceof EstadoOrdenDTO estado && orden.getEstadoOrden() != estado) {
+            return false;
+        }
+        if (tipoSel instanceof TipoOrdenDTO tipo && orden.getTipoOrden() != tipo) {
+            return false;
+        }
+        return fechaEnRango(orden.getFechaEntregaEst(), inicio, fin);
+    }
+
+    private boolean coincideSalida(SalidaDTO salida, Object razonSel, LocalDate inicio, LocalDate fin) {
+        if (razonSel instanceof RazonSalidaDTO razon && salida.getRazon() != razon) {
+            return false;
+        }
+        return fechaEnRango(salida.getFechaSalida(), inicio, fin);
+    }
+
+    private boolean fechaEnRango(LocalDate fecha, LocalDate inicio, LocalDate fin) {
+        if (inicio != null && (fecha == null || fecha.isBefore(inicio))) {
+            return false;
+        }
+        return fin == null || (fecha != null && !fecha.isAfter(fin));
+    }
+
+    private NuevaSalidaDTO nuevaSalidaDTO(SucursalDTO sucursal, RazonSalidaDTO razon, String comentarios,
+            List<ProductoSalidaDTO> productos) {
+        NuevaSalidaDTO dto = new NuevaSalidaDTO();
+        dto.setSucursal(sucursal);
+        dto.setRazon(razon);
+        dto.setComentarios(comentarios);
+        dto.setProductos(productos);
+        return dto;
+    }
+
+    private String mensajeError(Exception ex, String mensajePorDefecto) {
+        return ex.getMessage() != null ? ex.getMessage() : mensajePorDefecto;
     }
 }

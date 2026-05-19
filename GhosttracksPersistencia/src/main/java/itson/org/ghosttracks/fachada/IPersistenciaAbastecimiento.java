@@ -5,6 +5,10 @@
 package itson.org.ghosttracks.fachada;
 
 import itson.org.ghosttracks.entidades.Orden;
+import itson.org.ghosttracks.entidades.Producto;
+import itson.org.ghosttracks.entidades.Proveedor;
+import itson.org.ghosttracks.entidades.Salida;
+import itson.org.ghosttracks.entidades.Sucursal;
 import itson.org.ghosttracks.enums.EstadoOrden;
 import itson.org.ghosttracks.exceptions.PersistenciaException;
 import java.util.List;
@@ -15,13 +19,25 @@ import java.util.List;
  */
 public interface IPersistenciaAbastecimiento {
 
-    Orden insertar(Orden orden) throws PersistenciaException;
+    Orden insertarOrden(Orden orden) throws PersistenciaException;
 
-    Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException;
+    Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException;
 
-    Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
+    Orden actualizarOrden(Orden orden) throws PersistenciaException;
 
-    List<Orden> obtenerTodos() throws PersistenciaException;
+    List<Orden> obtenerOrdenes() throws PersistenciaException;
 
-    Orden obtenerPorId(Long id) throws PersistenciaException;
+    Orden obtenerOrdenPorId(String id) throws PersistenciaException;
+
+    List<Proveedor> obtenerProveedores() throws PersistenciaException;
+
+    List<Sucursal> obtenerSucursales() throws PersistenciaException;
+
+    List<Producto> obtenerProductos() throws PersistenciaException;
+
+    Producto obtenerProductoPorId(String idProducto) throws PersistenciaException;
+
+    Salida guardarSalida(Salida salida) throws PersistenciaException;
+
+    List<Salida> obtenerSalidas() throws PersistenciaException;
 }

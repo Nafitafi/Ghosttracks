@@ -17,11 +17,12 @@ public interface IOrdenesDAO {
 
     public abstract Orden insertar(Orden orden) throws PersistenciaException;
 
-    public abstract Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException;
+    public abstract Orden actualizar(String idOrden, EstadoOrden estado) throws PersistenciaException;
 
     public abstract Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
 
     public abstract List<Orden> obtenerTodos() throws PersistenciaException;
 
-    public abstract Orden obtenerPorId(Long id) throws PersistenciaException;
+    public abstract Orden obtenerPorId(String id) throws PersistenciaException;
+    
 }

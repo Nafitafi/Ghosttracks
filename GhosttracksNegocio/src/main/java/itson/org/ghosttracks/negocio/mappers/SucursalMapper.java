@@ -5,6 +5,7 @@
 package itson.org.ghosttracks.negocio.mappers;
 
 import itson.org.ghosttracks.dtos.SucursalDTO;
+import itson.org.ghosttracks.entidades.Sucursal;
 import itson.org.ghosttracks.entidades.SucursalRef;
 
 /**
@@ -12,18 +13,32 @@ import itson.org.ghosttracks.entidades.SucursalRef;
  * @author nafbr
  */
 public class SucursalMapper {
+
     public static SucursalDTO toSucursalDTO(SucursalRef ref) {
         if (ref == null) {
             return null;
         }
-        Long id = null;
-        try {
-            id = Long.valueOf(ref.getIdSucursal());
-        } catch (NumberFormatException ignored) {
-        }
         SucursalDTO dto = new SucursalDTO();
-        dto.setIdSucursal(id);
+        dto.setIdSucursal(ref.getIdSucursal());
         dto.setNombre(ref.getNombre());
         return dto;
+    }
+
+    public static SucursalDTO toSucursalDTO(Sucursal sucursal) {
+        if (sucursal == null) {
+            return null;
+        }
+        SucursalDTO dto = new SucursalDTO();
+        dto.setIdSucursal(sucursal.getIdSucursal());
+        dto.setNombre(sucursal.getNombre());
+        dto.setTelefono(sucursal.getTelefono());
+        return dto;
+    }
+
+    public static SucursalRef toRef(SucursalDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+        return new SucursalRef(dto.getIdSucursal(), dto.getNombre());
     }
 }

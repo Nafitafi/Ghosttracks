@@ -5,8 +5,13 @@
 package itson.org.ghosttracksabastecimiento.fachada;
 
 import itson.org.ghosttracks.dtos.NuevaOrdenDTO;
+import itson.org.ghosttracks.dtos.NuevaSalidaDTO;
 import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
 import itson.org.ghosttracks.dtos.ProveedorDTO;
+import itson.org.ghosttracks.dtos.SalidaDTO;
+import itson.org.ghosttracks.dtos.SucursalDTO;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracksabastecimiento.excepciones.AbastecimientoException;
 import java.util.List;
@@ -17,16 +22,24 @@ import java.util.List;
  */
 public interface IAbastecimiento {
 
-    List<OrdenDTO> obtenerTodasLasOrdenes() throws AbastecimientoException;
+        List<OrdenDTO> obtenerTodasLasOrdenes() throws AbastecimientoException;
 
-    OrdenDTO obtenerOrdenPorId(Long idOrden) throws AbastecimientoException;
+    OrdenDTO obtenerOrdenPorId(String idOrden) throws AbastecimientoException;
 
     OrdenDTO registrarNuevaOrden(NuevaOrdenDTO dto) throws AbastecimientoException;
 
-    void actualizarEstadoOrden(Long idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException;
+    void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException;
 
-    OrdenDTO confirmarRecepcionOrden(Long idOrden, byte[] imagen) throws AbastecimientoException;
+    OrdenDTO confirmarRecepcionOrden(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws AbastecimientoException;
     
     List<ProveedorDTO> obtenerTodosLosProveedores() throws AbastecimientoException;
-    
+
+    List<SucursalDTO> obtenerTodasLasSucursales() throws AbastecimientoException;
+
+    List<ProductoDTO> obtenerProductosDisponibles() throws AbastecimientoException;
+
+    SalidaDTO registrarNuevaSalida(NuevaSalidaDTO dto) throws AbastecimientoException;
+
+    List<SalidaDTO> obtenerTodasLasSalidas() throws AbastecimientoException;
+
 }

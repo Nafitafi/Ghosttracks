@@ -1,4 +1,3 @@
-
 package itson.org.ghosttracks.presentacion.cliente;
 
 import itson.org.ghosttracks.controladores.ControlVentaEnLinea;
@@ -14,21 +13,21 @@ import javax.swing.table.DefaultTableModel;
 public class PantallaCarrito extends javax.swing.JPanel {
 
     private final ControlVentaEnLinea control;
-    
+
     public PantallaCarrito(ControlVentaEnLinea ctrl) {
         this.control = ctrl;
         initComponents();
         control.llenarTablaCarrito(this);
-        
+
         tblCarrito.setRowHeight(80);
         tblCarrito.getTableHeader().setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 14));
         tblCarrito.setFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 14));
-        
+
         javax.swing.table.DefaultTableCellRenderer centerRenderer = new javax.swing.table.DefaultTableCellRenderer();
         centerRenderer.setHorizontalAlignment(javax.swing.JLabel.CENTER);
-        
+
         tblCarrito.getColumnModel().getColumn(3).setCellRenderer(centerRenderer);
-        
+
     }
 
     /**
@@ -180,12 +179,13 @@ public class PantallaCarrito extends javax.swing.JPanel {
     }//GEN-LAST:event_btnContinuarActionPerformed
 
     class ImageRenderer extends javax.swing.table.DefaultTableCellRenderer {
+
         @Override
         public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
-            
+
             super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-            
+
             if (value instanceof javax.swing.ImageIcon) {
                 setIcon((javax.swing.ImageIcon) value);
             } else {
@@ -196,7 +196,7 @@ public class PantallaCarrito extends javax.swing.JPanel {
             return this;
         }
     }
-    
+
     public void llenarTabla(CarritoDTO carrito) {
         List<ItemCarritoDTO> productos = carrito.getProductos();
         DefaultTableModel modelo = (DefaultTableModel) tblCarrito.getModel();
@@ -209,7 +209,7 @@ public class PantallaCarrito extends javax.swing.JPanel {
             try {
                 String ruta = "/imgCatalogo/" + item.getProductoSeleccionado().getImgProducto();
                 java.net.URL url = getClass().getResource(ruta);
-                
+
                 if (url != null) {
                     javax.swing.ImageIcon iconoOriginal = new javax.swing.ImageIcon(url);
                     java.awt.Image imgEscalada = iconoOriginal.getImage().getScaledInstance(70, 70, java.awt.Image.SCALE_SMOOTH);
@@ -221,12 +221,12 @@ public class PantallaCarrito extends javax.swing.JPanel {
                 System.out.println("Error cargando imagen en carrito: " + e.getMessage());
             }
 
-            fila[0] = icono; 
-            fila[1] = item.getProductoSeleccionado().getIdProducto(); 
-            fila[2] = item.getProductoSeleccionado().getNombre();     
-            fila[3] = item.getCantidad();                             
-            fila[4] = String.format("$%.2f", item.getSubtotal());   
-            fila[5] = "Eliminar";                                     
+            fila[0] = icono;
+            fila[1] = item.getProductoSeleccionado().getIdProducto();
+            fila[2] = item.getProductoSeleccionado().getNombre();
+            fila[3] = item.getCantidad();
+            fila[4] = String.format("$%.2f", item.getSubtotal());
+            fila[5] = "Eliminar";
 
             modelo.addRow(fila);
         }
@@ -245,9 +245,10 @@ public class PantallaCarrito extends javax.swing.JPanel {
 
         lblSubtotal.setText(String.format("$%.2f", carrito.getTotal()));
     }
-    
+
     class ButtonRenderer extends javax.swing.JButton implements javax.swing.table.TableCellRenderer {
-        public ButtonRenderer() { 
+
+        public ButtonRenderer() {
             setOpaque(true);
             setBorder(javax.swing.BorderFactory.createEmptyBorder(5, 5, 5, 5));
         }
@@ -256,7 +257,7 @@ public class PantallaCarrito extends javax.swing.JPanel {
         public java.awt.Component getTableCellRendererComponent(javax.swing.JTable table, Object value,
                 boolean isSelected, boolean hasFocus, int row, int column) {
             setText("Eliminar");
-            setBackground(new java.awt.Color(204, 51, 0)); 
+            setBackground(new java.awt.Color(204, 51, 0));
             setForeground(java.awt.Color.WHITE);
             setFont(new java.awt.Font("Arial", java.awt.Font.BOLD, 12));
             return this;
@@ -264,6 +265,7 @@ public class PantallaCarrito extends javax.swing.JPanel {
     }
 
     class ButtonEditor extends javax.swing.DefaultCellEditor {
+
         protected javax.swing.JButton button;
         private String label;
         private boolean isPushed;
@@ -288,12 +290,12 @@ public class PantallaCarrito extends javax.swing.JPanel {
         public Object getCellEditorValue() {
             if (isPushed) {
                 int fila = tblCarrito.getSelectedRow();
-                
-                if (fila >= 0) {
-                    Object value = tblCarrito.getValueAt(fila, 1); 
 
-                    if (value instanceof Long) {
-                        Long idProducto = (Long) value;
+                if (fila >= 0) {
+                    Object value = tblCarrito.getValueAt(fila, 1);
+
+                    if (value != null) {
+                        String idProducto = String.valueOf(value);
                         javax.swing.SwingUtilities.invokeLater(() -> {
                             control.eliminarProductoCarrito(idProducto);
                             control.llenarTablaCarrito(PantallaCarrito.this);
@@ -310,7 +312,7 @@ public class PantallaCarrito extends javax.swing.JPanel {
             isPushed = false;
             return super.stopCellEditing();
         }
-}
+    }
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private itson.org.ghosttracks.utilerias.BotonRedondeado btnContinuar;

@@ -16,11 +16,11 @@ import java.util.List;
  */
 public class Orden {
 
-    private Long idOrden;
+    private String idOrden;
     private TipoOrden tipoOrden;
     private String comentarios;
     private Double total;
-    private LocalDate fechaEntregaEstimada;   
+    private LocalDate fechaEntregaEstimada;
     private LocalDateTime fecha; // instante de registro en el sistema
     private String folio;
     private EstadoOrden estado;
@@ -34,11 +34,11 @@ public class Orden {
     public Orden() {
     }
 
-    public Long getIdOrden() {
+    public String getIdOrden() {
         return idOrden;
     }
 
-    public void setIdOrden(Long idOrden) {
+    public void setIdOrden(String idOrden) {
         this.idOrden = idOrden;
     }
 

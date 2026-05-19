@@ -215,6 +215,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Buscar producto"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnBuscarProductoActionPerformed"/>
+              </Events>
             </Component>
             <Component class="javax.swing.JLabel" name="lblCantidad">
               <Properties>
@@ -272,6 +275,9 @@
                 </Property>
                 <Property name="text" type="java.lang.String" value="Cancelar registro"/>
               </Properties>
+              <Events>
+                <EventHandler event="actionPerformed" listener="java.awt.event.ActionListener" parameters="java.awt.event.ActionEvent" handler="btnCancelarActionPerformed"/>
+              </Events>
             </Component>
             <Component class="itson.org.ghosttracks.utilerias.BotonRedondeado" name="btnRegistrar">
               <Properties>

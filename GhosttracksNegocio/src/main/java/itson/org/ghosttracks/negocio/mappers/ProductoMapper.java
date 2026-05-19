@@ -13,7 +13,7 @@ import itson.org.ghosttracks.entidades.Producto;
  */
 public class ProductoMapper {
 
-    private ProductoMapper() {
+     private ProductoMapper() {
     }
 
     public static ProductoDTO toDTO(Producto entidad) {
@@ -49,5 +49,6 @@ public class ProductoMapper {
         entidad.setStock(dto.getStock());
         return entidad;
     }
+
 
 }

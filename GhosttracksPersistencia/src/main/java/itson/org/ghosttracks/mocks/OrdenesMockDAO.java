@@ -24,11 +24,11 @@ import java.util.List;
 public class OrdenesMockDAO implements IOrdenesDAO {
 
     private final List<Orden> ordenesDB = new ArrayList<>();
-    private Long generadorId = 1L;
+    private long generadorId = 1L;
 
     public OrdenesMockDAO() {
         Orden o1 = new Orden();
-        o1.setIdOrden(generadorId++);
+        o1.setIdOrden(String.valueOf(generadorId++));
         o1.setFolio("ORD-001");
         o1.setComentarios("Entrega urgente por la mañana.");
         o1.setTotal(2450.75);
@@ -42,7 +42,7 @@ public class OrdenesMockDAO implements IOrdenesDAO {
         ordenesDB.add(o1);
 
         Orden o2 = new Orden();
-        o2.setIdOrden(generadorId++);
+        o2.setIdOrden(String.valueOf(generadorId++));
         o2.setFolio("ORD-002");
         o2.setComentarios("Reposición de vinilos.");
         o2.setTotal(1890.00);
@@ -61,7 +61,7 @@ public class OrdenesMockDAO implements IOrdenesDAO {
         if (orden == null) {
             throw new PersistenciaException("La orden a insertar no puede ser nula.");
         }
-        orden.setIdOrden(generadorId++);
+        orden.setIdOrden(String.valueOf(generadorId++));
         if (orden.getFecha() == null) {
             orden.setFecha(LocalDateTime.now());
         }
@@ -73,7 +73,7 @@ public class OrdenesMockDAO implements IOrdenesDAO {
     }
 
     @Override
-    public Orden actualizar(Long idOrden, EstadoOrden estado) throws PersistenciaException {
+    public Orden actualizar(String idOrden, EstadoOrden estado) throws PersistenciaException {
         for (Orden orden : ordenesDB) {
             if (orden.getIdOrden().equals(idOrden)) {
                 orden.setEstado(estado);
@@ -89,7 +89,7 @@ public class OrdenesMockDAO implements IOrdenesDAO {
     }
 
     @Override
-    public Orden obtenerPorId(Long id) throws PersistenciaException {
+    public Orden obtenerPorId(String id) throws PersistenciaException {
         for (Orden orden : ordenesDB) {
             if (orden.getIdOrden().equals(id)) {
                 return orden;
@@ -100,6 +100,15 @@ public class OrdenesMockDAO implements IOrdenesDAO {
 
     @Override
     public Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException {
-        throw new UnsupportedOperationException("Not supported yet."); // Generated from nbfs://nbhost/SystemFileSystem/Templates/Classes/Code/GeneratedMethodBody
+        if (orden == null || orden.getIdOrden() == null) {
+            throw new PersistenciaException("La orden a actualizar debe tener identificador.");
+        }
+        for (int i = 0; i < ordenesDB.size(); i++) {
+            if (ordenesDB.get(i).getIdOrden().equals(orden.getIdOrden())) {
+                ordenesDB.set(i, orden);
+                return orden;
+            }
+        }
+        throw new PersistenciaException("Orden no encontrada con el ID: " + orden.getIdOrden());
     }
 }

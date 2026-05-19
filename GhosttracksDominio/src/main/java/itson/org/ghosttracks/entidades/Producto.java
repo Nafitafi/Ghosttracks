@@ -10,7 +10,7 @@ import java.util.List;
  */
     
 public class Producto {
-    private Long idProducto; 
+    private String idProducto; 
     
     private String nombre;
     private String imgProducto;
@@ -38,7 +38,7 @@ public class Producto {
         this.estado = estado;
     }
 
-    public Producto(Long idProducto, String nombre, String imgProducto, TipoProducto tipoProducto, String artista, String genero, List<String> setlist, Double precio, Integer stock, EstadoProducto estado) {
+    public Producto(String idProducto, String nombre, String imgProducto, TipoProducto tipoProducto, String artista, String genero, List<String> setlist, Double precio, Integer stock, EstadoProducto estado) {
         this.idProducto = idProducto;
         this.nombre = nombre;
         this.imgProducto = imgProducto;
@@ -51,11 +51,11 @@ public class Producto {
         this.estado = estado;
     }
 
-    public Long getIdProducto() {
+    public String getIdProducto() {
         return idProducto;
     }
 
-    public void setIdProducto(Long idProducto) {
+    public void setIdProducto(String idProducto) {
         this.idProducto = idProducto;
     }
 
@@ -130,5 +130,4 @@ public class Producto {
     public void setEstado(EstadoProducto estado) {
         this.estado = estado;
     }
-
 }

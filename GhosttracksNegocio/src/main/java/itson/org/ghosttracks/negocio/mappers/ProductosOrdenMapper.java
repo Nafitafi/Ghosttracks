@@ -15,6 +15,7 @@ import java.util.List;
  * @author nafbr
  */
 public class ProductosOrdenMapper {
+
     public static List<ProductoOrdenDTO> toProductosOrdenDTO(List<ProductoOrden> productos) {
         List<ProductoOrdenDTO> lista = new ArrayList<>();
         if (productos == null) {
@@ -25,7 +26,7 @@ public class ProductosOrdenMapper {
             if (po.getIdProducto() != null) {
                 ProductoDTO producto = new ProductoDTO();
                 producto.setIdProducto(po.getIdProducto());
-                producto.setNombre("Producto #" + po.getIdProducto());
+                producto.setNombre(po.getNombreProducto() != null ? po.getNombreProducto() : "Producto #" + po.getIdProducto());
                 item.setProducto(producto);
             }
             item.setCantidadProducto(po.getCantidadProducto() != null ? po.getCantidadProducto() : 0);
@@ -35,5 +36,38 @@ public class ProductosOrdenMapper {
             lista.add(item);
         }
         return lista;
+    }
+
+    public static ProductoOrden toEntidad(ProductoOrdenDTO dto) {
+        if (dto == null) {
+            return null;
+        }
+
+        ProductoOrden productoOrden = new ProductoOrden();
+        productoOrden.setCantidadProducto(dto.getCantidadProducto());
+        productoOrden.setPrecioUnitario(dto.getPrecioUnitario());
+        productoOrden.setImporteTotal(dto.getImporteTotal());
+        productoOrden.setRecibido(dto.isRecibido());
+
+        ProductoDTO producto = dto.getProducto();
+        if (producto != null) {
+            productoOrden.setIdProducto(producto.getIdProducto());
+            productoOrden.setNombreProducto(producto.getNombre());
+        }
+        return productoOrden;
+    }
+
+    public static List<ProductoOrden> toEntidades(List<ProductoOrdenDTO> productos) {
+        List<ProductoOrden> entidades = new ArrayList<>();
+        if (productos == null) {
+            return entidades;
+        }
+        for (ProductoOrdenDTO producto : productos) {
+            ProductoOrden entidad = toEntidad(producto);
+            if (entidad != null) {
+                entidades.add(entidad);
+            }
+        }
+        return entidades;
     }
 }

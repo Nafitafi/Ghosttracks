@@ -1,5 +1,13 @@
 package itson.org.ghosttracks.presentacion.administrador;
 
+import itson.org.ghosttracks.controladores.ControlAbastecimiento;
+import itson.org.ghosttracks.dtos.OrdenDTO;
+import itson.org.ghosttracks.dtos.ProductoDTO;
+import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
+import java.awt.Image;
+import javax.swing.ImageIcon;
+import javax.swing.table.DefaultTableModel;
+
 
 /**
  *
@@ -7,8 +15,73 @@ package itson.org.ghosttracks.presentacion.administrador;
  */
 public class PantallaResumenOrden extends javax.swing.JPanel {
 
+    private ControlAbastecimiento controlador;
+    private OrdenDTO orden;
+    
     public PantallaResumenOrden() {
         initComponents();
+    }
+    
+    public void setControlador(ControlAbastecimiento controlador) {
+        this.controlador = controlador;
+    }
+
+    public void cargarOrden(OrdenDTO orden) {
+        this.orden = orden;
+        if (orden == null) {
+            return;
+        }
+
+        lblFechaOrdenDisplay.setText(orden.getFechaSolicitud() != null ? orden.getFechaSolicitud().toLocalDate().toString() : "NA");
+        lblFechaEntregaDisplay.setText(orden.getFechaEntregaEst() != null ? orden.getFechaEntregaEst().toString() : "NA");
+        lblFolioDisplay.setText(texto(orden.getFolio()));
+        lblTipoOrdenDisplay.setText(orden.getTipoOrden() != null ? orden.getTipoOrden().toString() : "NA");
+        lblSucursalDisplay.setText(orden.getSucursal() != null ? texto(orden.getSucursal().getNombre()) : "NA");
+        lblProveedorDisplay.setText(orden.getProveedor() != null ? texto(orden.getProveedor().getNombreProveedor()) : "NA");
+        cargarImagenRecepcion(orden.getImagenRecepcion());
+        lblTipoOrdenDisplay1.setText(orden.getEstadoOrden() != null ? orden.getEstadoOrden().toString() : "NA");
+        txtaComentariosDisplay.setText(texto(orden.getComentarios()));
+
+        DefaultTableModel modelo = (DefaultTableModel) tblProductosOrden.getModel();
+        modelo.setRowCount(0);
+        if (orden.getProductosOrden() != null) {
+            for (ProductoOrdenDTO productoOrden : orden.getProductosOrden()) {
+                ProductoDTO producto = productoOrden.getProducto();
+                modelo.addRow(new Object[]{
+                    producto != null ? producto.getIdProducto() : "NA",
+                    producto != null ? texto(producto.getNombre()) : "NA",
+                    productoOrden.getCantidadProducto(),
+                    String.format("$%.2f", productoOrden.getImporteTotal())
+                });
+            }
+        }
+    }
+
+    private String texto(String valor) {
+        return valor != null && !valor.isBlank() ? valor : "NA";
+    }
+
+    private void cargarImagenRecepcion(Byte[] imagenRecepcion) {
+        lblImagenDisplay.setIcon(null);
+        lblImagenDisplay.setToolTipText(null);
+        if (imagenRecepcion == null || imagenRecepcion.length == 0) {
+            lblImagenDisplay.setText("Sin imagen");
+            return;
+        }
+
+        byte[] bytes = new byte[imagenRecepcion.length];
+        for (int i = 0; i < imagenRecepcion.length; i++) {
+            bytes[i] = imagenRecepcion[i] != null ? imagenRecepcion[i] : 0;
+        }
+        ImageIcon icono = new ImageIcon(bytes);
+        if (icono.getIconWidth() <= 0 || icono.getIconHeight() <= 0) {
+            lblImagenDisplay.setText("Imagen no valida");
+            return;
+        }
+        Image imagenEscalada = icono.getImage().getScaledInstance(120, 80, Image.SCALE_SMOOTH);
+        lblImagenDisplay.setText("");
+        lblImagenDisplay.setIcon(new ImageIcon(imagenEscalada));
+        lblImagenDisplay.setToolTipText("Imagen de recepcion");
     }
 
     @SuppressWarnings("unchecked")
@@ -281,11 +354,16 @@ public class PantallaResumenOrden extends javax.swing.JPanel {
     }// </editor-fold>//GEN-END:initComponents
 
     private void btnGenerarPDFActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnGenerarPDFActionPerformed
-        // TODO add your handling code here:
+        if (controlador != null) {
+            String folio = orden != null ? orden.getFolio() : "Orden";
+            controlador.exportarReporteIndividual(tblProductosOrden, "Productos de la orden " + texto(folio));
+        }
     }//GEN-LAST:event_btnGenerarPDFActionPerformed
 
     private void btnVolverActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_btnVolverActionPerformed
-        // TODO add your handling code here:
+        if (controlador != null) {
+            controlador.volverAOrdenes();
+        }
     }//GEN-LAST:event_btnVolverActionPerformed
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
