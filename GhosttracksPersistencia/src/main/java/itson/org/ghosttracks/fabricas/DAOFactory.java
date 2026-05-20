@@ -27,17 +27,10 @@ import itson.org.ghosttracks.mongo.SucursalesMongoDAO;
 public class DAOFactory {
 
     private static final DAOFactory INSTANCIA = new DAOFactory();
-    private final boolean usarMongo;
+    private final boolean usarMongo = true;
 
     private DAOFactory() {
-        String motor = System.getProperty("ghosttracks.dao.motor");
-        if (motor == null || motor.isBlank()) {
-            motor = System.getenv("GHOSTTRACKS_DAO_MOTOR");
-        }
-        if (motor == null || motor.isBlank()) {
-            motor = "mongo";
-        }
-        this.usarMongo = !"mock".equalsIgnoreCase(motor);
+ 
     }
 
     public static DAOFactory getInstancia() {
