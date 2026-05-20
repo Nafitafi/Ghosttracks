@@ -11,8 +11,6 @@ import itson.org.ghosttracks.dtos.OrdenDTO;
 import itson.org.ghosttracks.dtos.ProductoOrdenDTO;
 import itson.org.ghosttracks.entidades.Orden;
 import itson.org.ghosttracks.entidades.ProductoOrden;
-import itson.org.ghosttracks.entidades.ProveedorRef;
-import itson.org.ghosttracks.entidades.SucursalRef;
 import itson.org.ghosttracks.enums.EstadoOrden;
 import itson.org.ghosttracks.enums.EstadoOrdenDTO;
 import itson.org.ghosttracks.enums.TipoOrden;

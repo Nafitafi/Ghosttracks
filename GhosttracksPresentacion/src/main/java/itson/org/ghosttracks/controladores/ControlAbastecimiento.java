@@ -32,7 +32,7 @@ import itson.org.ghosttracks.presentacion.administrador.PantallaNuevaSalida;
 import itson.org.ghosttracks.presentacion.administrador.PantallaOrdenesProveedores;
 import itson.org.ghosttracks.presentacion.administrador.PantallaSalidas;
 import itson.org.ghosttracksabastecimiento.excepciones.AbastecimientoException;
-import itson.org.ghosttracksabastecimiento.fachada.AbastecimientoFachada;
+import itson.org.ghosttracksabastecimiento.fachada.Abastecimiento;
 import itson.org.ghosttracksabastecimiento.fachada.IAbastecimiento;
 import java.io.IOException;
 import java.time.LocalDate;
@@ -52,7 +52,7 @@ public class ControlAbastecimiento {
 
     public ControlAbastecimiento(Navegador navegador) {
         this.navegador = navegador;
-        this.abastecimientoFachada = new AbastecimientoFachada();
+        this.abastecimientoFachada = new Abastecimiento();
         this.reportePdfExporter = new ReportePdfExporter();
         this.ordenDTOFactory = new OrdenDTOFactory();
     }

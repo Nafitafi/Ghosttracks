@@ -34,7 +34,7 @@ import java.util.List;
  *
  * @author nafbr
  */
-public class AbastecimientoFachada implements IAbastecimiento {
+public class Abastecimiento implements IAbastecimiento {
 
     private final IOrdenesBO ordenesBO;
     private final IProveedoresBO proveedoresBO;
@@ -42,7 +42,7 @@ public class AbastecimientoFachada implements IAbastecimiento {
     private final ISucursalesBO sucursalesBO;
     private final IProductosBO productosBO;
 
-    public AbastecimientoFachada() {
+    public Abastecimiento() {
         this.ordenesBO = new OrdenesBO();
         this.proveedoresBO = new ProveedoresBO();
         this.salidasBO = new SalidasBO();
