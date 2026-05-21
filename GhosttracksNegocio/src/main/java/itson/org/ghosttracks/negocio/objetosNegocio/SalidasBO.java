@@ -29,10 +29,20 @@ public class SalidasBO implements ISalidasBO {
 
     private final IPersistenciaAbastecimiento persistencia;
 
+    /**
+     * Construye un nuevo objeto de negocio para salidas.
+     */
     public SalidasBO() {
         this.persistencia = new PersistenciaFachada();
     }
 
+    /**
+     * Registra una nueva salida de productos.
+     *
+     * @param dto Objeto DTO con los datos de la salida a registrar.
+     * @return Salida registrada con éxito.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public SalidaDTO registrarSalida(NuevaSalidaDTO dto) throws NegocioException {
         validarSalida(dto);
@@ -45,6 +55,12 @@ public class SalidasBO implements ISalidasBO {
         }
     }
 
+    /**
+     * Obtiene una lista con todas las salidas registradas en el sistema.
+     *
+     * @return Lista de todas las salidas encontradas.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<SalidaDTO> obtenerSalidas() throws NegocioException {
         try {
@@ -56,6 +72,15 @@ public class SalidasBO implements ISalidasBO {
         }
     }
 
+    /**
+     * Obtiene una lista de salidas que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * salidas.
+     * @return Lista de salidas que cumplen con el filtro aplicado.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws NegocioException {
         try {

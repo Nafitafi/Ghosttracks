@@ -14,7 +14,20 @@ import java.util.List;
  */
 public interface ISucursalesDAO {
 
+    /**
+     * Obtiene una lista con todas las sucursales registradas en el sistema.
+     *
+     * @return Lista de todas las sucursales encontradas.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     List<Sucursal> obtenerTodos() throws PersistenciaException;
 
+    /**
+     * Obtiene una sucursal en específico mediante su identificador único.
+     *
+     * @param idSucursal Identificador de la sucursal a buscar.
+     * @return La sucursal correspondiente al ID proporcionado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     Sucursal obtenerPorId(String idSucursal) throws PersistenciaException;
 }

@@ -22,10 +22,19 @@ public class SucursalesBO implements ISucursalesBO {
 
     private final IPersistenciaAbastecimiento persistencia;
 
+    /**
+     * Construye un nuevo objeto de negocio para sucursales.
+     */
     public SucursalesBO() {
         this.persistencia = new PersistenciaFachada();
     }
 
+    /**
+     * Obtiene una lista con todas las sucursales registradas en el sistema.
+     *
+     * @return Lista de todas las sucursales encontradas.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<SucursalDTO> obtenerTodos() throws NegocioException {
         try {

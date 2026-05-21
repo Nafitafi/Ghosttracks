@@ -48,6 +48,10 @@ public class Abastecimiento implements IAbastecimiento {
     private final IProductosBO productosBO;
     private final IComunicacionProveedor comunicacionProveedor;
 
+    /**
+     * Construye una nueva fachada de abastecimiento con sus dependencias de
+     * negocio.
+     */
     public Abastecimiento() {
         this.ordenesBO = new OrdenesBO();
         this.proveedoresBO = new ProveedoresBO();
@@ -57,6 +61,12 @@ public class Abastecimiento implements IAbastecimiento {
         this.comunicacionProveedor = new ComunicacionProveedor();
     }
 
+    /**
+     * Obtiene una lista con todas las órdenes registradas en el sistema.
+     *
+     * @return Lista de todas las órdenes encontradas.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<OrdenDTO> obtenerTodasLasOrdenes() throws AbastecimientoException {
         try {
@@ -66,6 +76,15 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista de órdenes que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * órdenes.
+     * @return Lista de órdenes que cumplen con el filtro aplicado.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws AbastecimientoException {
         try {
@@ -75,6 +94,13 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una orden en específico mediante su identificador único.
+     *
+     * @param idOrden Identificador de la orden a buscar.
+     * @return La orden correspondiente al ID proporcionado.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public OrdenDTO obtenerOrdenPorId(String idOrden) throws AbastecimientoException {
         if (idOrden == null || idOrden.isBlank()) {
@@ -87,6 +113,14 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Registra una nueva orden de compra y notifica al proveedor
+     * correspondiente.
+     *
+     * @param dto Objeto DTO con los datos de la orden a registrar.
+     * @return Orden registrada con éxito.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public OrdenDTO registrarNuevaOrden(NuevaOrdenDTO dto) throws AbastecimientoException {
         try {
@@ -117,6 +151,14 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Actualiza el estado de una orden existente mediante su identificador
+     * único.
+     *
+     * @param idOrden Identificador de la orden a actualizar.
+     * @param nuevoEstado Nuevo estado que se asignará a la orden.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws AbastecimientoException {
         try {
@@ -126,6 +168,16 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Confirma la recepción de una orden y actualiza el stock de los productos
+     * recibidos.
+     *
+     * @param idOrden Identificador de la orden a confirmar.
+     * @param imagen Evidencia de la recepción de la orden.
+     * @param productosRecibidos Lista de productos recibidos en la orden.
+     * @return Orden actualizada con la recepción confirmada.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public OrdenDTO confirmarRecepcionOrden(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws AbastecimientoException {
         try {
@@ -159,6 +211,12 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista con todos los proveedores registrados en el sistema.
+     *
+     * @return Lista de todos los proveedores encontrados.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<ProveedorDTO> obtenerTodosLosProveedores() throws AbastecimientoException {
         try {
@@ -172,6 +230,12 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista con todas las sucursales registradas en el sistema.
+     *
+     * @return Lista de todas las sucursales encontradas.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<SucursalDTO> obtenerTodasLasSucursales() throws AbastecimientoException {
         try {
@@ -185,6 +249,12 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista con todos los productos disponibles en el sistema.
+     *
+     * @return Lista de todos los productos disponibles encontrados.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<ProductoDTO> obtenerProductosDisponibles() throws AbastecimientoException {
         try {
@@ -198,6 +268,14 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Registra una nueva salida de productos y descuenta el stock
+     * correspondiente.
+     *
+     * @param dto Objeto DTO con los datos de la salida a registrar.
+     * @return Salida registrada con éxito.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public SalidaDTO registrarNuevaSalida(NuevaSalidaDTO dto) throws AbastecimientoException {
         try {
@@ -236,6 +314,12 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista con todas las salidas registradas en el sistema.
+     *
+     * @return Lista de todas las salidas encontradas.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<SalidaDTO> obtenerTodasLasSalidas() throws AbastecimientoException {
         try {
@@ -245,6 +329,15 @@ public class Abastecimiento implements IAbastecimiento {
         }
     }
 
+    /**
+     * Obtiene una lista de salidas que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * salidas.
+     * @return Lista de salidas que cumplen con el filtro aplicado.
+     * @throws AbastecimientoException En caso de algun fallo en abastecimiento.
+     */
     @Override
     public List<SalidaDTO> obtenerSalidas(FiltroSalidaDTO filtro) throws AbastecimientoException {
         try {

@@ -14,5 +14,11 @@ import java.util.List;
  */
 public interface IProveedoresBO {
 
+    /**
+     * Obtiene una lista con todos los proveedores registrados en el sistema.
+     *
+     * @return Lista de todos los proveedores encontrados.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     List<ProveedorDTO> obtenerTodos() throws NegocioException;
 }

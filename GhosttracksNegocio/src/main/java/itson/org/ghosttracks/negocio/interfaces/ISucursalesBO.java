@@ -14,5 +14,11 @@ import java.util.List;
  */
 public interface ISucursalesBO {
 
+    /**
+     * Obtiene una lista con todas las sucursales registradas en el sistema.
+     *
+     * @return Lista de todas las sucursales encontradas.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     List<SucursalDTO> obtenerTodos() throws NegocioException;
 }

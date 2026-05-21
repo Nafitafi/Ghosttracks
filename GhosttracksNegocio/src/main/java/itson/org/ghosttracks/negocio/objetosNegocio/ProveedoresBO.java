@@ -18,13 +18,23 @@ import java.util.stream.Collectors;
  *
  * @author nafbr
  */
-public class ProveedoresBO implements IProveedoresBO{
+public class ProveedoresBO implements IProveedoresBO {
+
     private final IPersistenciaAbastecimiento persistencia;
 
+    /**
+     * Construye un nuevo objeto de negocio para proveedores.
+     */
     public ProveedoresBO() {
         this.persistencia = new PersistenciaFachada();
     }
 
+    /**
+     * Obtiene una lista con todos los proveedores registrados en el sistema.
+     *
+     * @return Lista de todos los proveedores encontrados.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<ProveedorDTO> obtenerTodos() throws NegocioException {
         try {

@@ -36,11 +36,20 @@ public class OrdenesBO implements IOrdenesBO {
     private final IPersistenciaAbastecimiento persistencia;
     private final IOrdenDTOFactory ordenFactory;
 
+    /**
+     * Construye un nuevo objeto de negocio para órdenes.
+     */
     public OrdenesBO() {
         this.persistencia = new PersistenciaFachada();
         this.ordenFactory = new OrdenDTOFactory();
     }
 
+    /**
+     * Valida que los datos de la orden sean correctos y completos.
+     *
+     * @param dto Objeto DTO con los datos de la orden a validar.
+     * @throws NegocioException En caso de que la validación falle.
+     */
     @Override
     public void validarDatosOrden(NuevaOrdenDTO dto) throws NegocioException {
         if (dto == null) {
@@ -56,6 +65,13 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Procesa y persiste una nueva orden de compra.
+     *
+     * @param dto Objeto DTO con los datos de la orden a registrar.
+     * @return Orden registrada con éxito.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public OrdenDTO procesarNuevaOrden(NuevaOrdenDTO dto) throws NegocioException {
         validarDatosOrden(dto);
@@ -69,6 +85,14 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Actualiza el estado de una orden existente mediante su identificador
+     * único.
+     *
+     * @param idOrden Identificador de la orden a actualizar.
+     * @param nuevoEstado Nuevo estado que se asignará a la orden.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public void actualizarEstadoOrden(String idOrden, EstadoOrdenDTO nuevoEstado) throws NegocioException {
         if (idOrden == null || idOrden.isBlank() || nuevoEstado == null) {
@@ -81,6 +105,12 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Obtiene una lista con todas las órdenes registradas en el sistema.
+     *
+     * @return Lista de todas las órdenes encontradas.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<OrdenDTO> obtenerOrdenes() throws NegocioException {
         try {
@@ -92,6 +122,15 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Obtiene una lista de órdenes que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * órdenes.
+     * @return Lista de órdenes que cumplen con el filtro aplicado.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public List<OrdenDTO> obtenerOrdenes(FiltroOrdenDTO filtro) throws NegocioException {
         try {
@@ -103,6 +142,13 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Obtiene una orden en específico mediante su identificador único.
+     *
+     * @param idOrden Identificador de la orden a buscar.
+     * @return La orden correspondiente al ID proporcionado.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public OrdenDTO obtenerOrdenPorId(String idOrden) throws NegocioException {
         try {
@@ -112,6 +158,16 @@ public class OrdenesBO implements IOrdenesBO {
         }
     }
 
+    /**
+     * Confirma la recepción de una orden con su evidencia y productos
+     * recibidos.
+     *
+     * @param idOrden Identificador de la orden a confirmar.
+     * @param imagen Evidencia de la recepción de la orden.
+     * @param productosRecibidos Lista de productos recibidos en la orden.
+     * @return Orden actualizada con la recepción confirmada.
+     * @throws NegocioException En caso de algun fallo en negocio.
+     */
     @Override
     public OrdenDTO confirmarRecepcion(String idOrden, byte[] imagen, List<ProductoOrdenDTO> productosRecibidos) throws NegocioException {
         if (idOrden == null || idOrden.isBlank()) {

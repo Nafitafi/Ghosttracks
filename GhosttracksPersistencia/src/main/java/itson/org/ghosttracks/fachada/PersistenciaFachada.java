@@ -33,6 +33,10 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
     private final IProductosDAO productosDAO;
     private final ISalidasDAO salidasDAO;
 
+    /**
+     * Construye una nueva fachada de persistencia con sus DAOs de
+     * abastecimiento.
+     */
     public PersistenciaFachada() {
         DAOFactory factory = DAOFactory.getInstancia();
         this.ordenesDAO = factory.crearOrdenesDAO();
@@ -42,76 +46,186 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
         this.salidasDAO = factory.crearSalidasDAO();
     }
 
+    /**
+     * Inserta un nuevo registro de orden.
+     *
+     * @param orden Objeto con los datos de la orden a registrar.
+     * @return Orden registrada con éxito.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Orden insertarOrden(Orden orden) throws PersistenciaException {
         return ordenesDAO.insertarOrden(orden);
     }
 
+    /**
+     * Actualiza el estado de una orden existente mediante su identificador
+     * único.
+     *
+     * @param idOrden Identificador de la orden a actualizar.
+     * @param estado Nuevo estado que se asignará a la orden.
+     * @return La orden actualizada con éxito.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException {
         return ordenesDAO.actualizarEstadoOrden(idOrden, estado);
     }
 
+    /**
+     * Actualiza una orden por completo.
+     *
+     * @param orden La orden con los nuevos datos a actualizar.
+     * @return La orden actualizada con éxito.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Orden actualizarOrden(Orden orden) throws PersistenciaException {
         return ordenesDAO.actualizarOrdenCompleta(orden);
     }
 
+    /**
+     * Obtiene una lista con todas las órdenes registradas en el sistema.
+     *
+     * @return Lista de todas las órdenes encontradas.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Orden> obtenerOrdenes() throws PersistenciaException {
         return ordenesDAO.obtenerTodos();
     }
 
+    /**
+     * Obtiene una orden en específico mediante su identificador único.
+     *
+     * @param id Identificador de la orden a buscar.
+     * @return La orden correspondiente al ID proporcionado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Orden obtenerOrdenPorId(String id) throws PersistenciaException {
         return ordenesDAO.obtenerPorId(id);
     }
 
+    /**
+     * Obtiene una lista con todos los proveedores registrados en el sistema.
+     *
+     * @return Lista de todos los proveedores encontrados.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Proveedor> obtenerProveedores() throws PersistenciaException {
         return proveedoresDAO.obtenerTodos();
     }
 
+    /**
+     * Obtiene una lista con todas las sucursales registradas en el sistema.
+     *
+     * @return Lista de todas las sucursales encontradas.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Sucursal> obtenerSucursales() throws PersistenciaException {
         return sucursalesDAO.obtenerTodos();
     }
 
+    /**
+     * Obtiene una lista con todos los productos registrados en el sistema.
+     *
+     * @return Lista de todos los productos encontrados.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Producto> obtenerProductos() throws PersistenciaException {
         return productosDAO.obtenerTodos();
     }
 
+    /**
+     * Obtiene un producto en específico mediante su identificador único.
+     *
+     * @param idProducto Identificador del producto a buscar.
+     * @return El producto correspondiente al ID proporcionado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Producto obtenerProductoPorId(String idProducto) throws PersistenciaException {
         return productosDAO.buscarPorId(idProducto);
     }
 
+    /**
+     * Guarda un nuevo registro de salida.
+     *
+     * @param salida Objeto con los datos de la salida a registrar.
+     * @return Salida registrada con éxito.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Salida guardarSalida(Salida salida) throws PersistenciaException {
         return salidasDAO.insertar(salida);
     }
 
+    /**
+     * Obtiene una lista con todas las salidas registradas en el sistema.
+     *
+     * @return Lista de todas las salidas encontradas.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Salida> obtenerSalidas() throws PersistenciaException {
         return salidasDAO.obtenerTodos();
     }
 
+    /**
+     * Incrementa la cantidad en stock de un producto específico.
+     *
+     * @param idProducto Identificador del producto al que se le incrementará el
+     * stock.
+     * @param cantidad Cantidad a incrementar en el stock.
+     * @return El producto actualizado con el nuevo stock.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Producto incrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException {
         return productosDAO.incrementarStock(idProducto, cantidad);
     }
 
+    /**
+     * Obtiene una lista de órdenes que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * órdenes.
+     * @return Lista de órdenes que cumplen con el filtro aplicado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Orden> obtenerOrdenes(FiltroOrdenPersistenciaDTO filtro) throws PersistenciaException {
         return ordenesDAO.obtenerPorFiltro(filtro);
     }
-    
+
+    /**
+     * Decrementa la cantidad en stock de un producto específico.
+     *
+     * @param idProducto Identificador del producto al que se le decrementará el
+     * stock.
+     * @param cantidad Cantidad a decrementar en el stock.
+     * @return El producto actualizado con el nuevo stock.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public Producto decrementarStockProducto(String idProducto, int cantidad) throws PersistenciaException {
         return productosDAO.decrementarStock(idProducto, cantidad);
     }
 
+    /**
+     * Obtiene una lista de salidas que coincidan con los criterios de búsqueda
+     * especificados.
+     *
+     * @param filtro Objeto DTO que contiene los criterios para filtrar las
+     * salidas.
+     * @return Lista de salidas que cumplen con el filtro aplicado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     @Override
     public List<Salida> obtenerSalidas(FiltroSalidaPersistenciaDTO filtro) throws PersistenciaException {
         return salidasDAO.obtenerPorFiltro(filtro);

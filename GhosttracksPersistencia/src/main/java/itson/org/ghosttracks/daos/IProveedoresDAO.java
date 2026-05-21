@@ -14,7 +14,20 @@ import java.util.List;
  */
 public interface IProveedoresDAO {
 
+    /**
+     * Obtiene una lista con todos los proveedores registrados en el sistema.
+     *
+     * @return Lista de todos los proveedores encontrados.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     List<Proveedor> obtenerTodos() throws PersistenciaException;
 
+    /**
+     * Obtiene un proveedor en específico mediante su identificador único.
+     *
+     * @param idProveedor Identificador del proveedor a buscar.
+     * @return El proveedor correspondiente al ID proporcionado.
+     * @throws PersistenciaException En caso de algun fallo en persistencia.
+     */
     Proveedor obtenerPorId(String idProveedor) throws PersistenciaException;
 }
