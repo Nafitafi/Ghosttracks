@@ -22,7 +22,7 @@ import org.bson.conversions.Bson;
  *
  * @author nafbr
  */
-public class SalidasMongoDAO implements ISalidasDAO{
+public class SalidasMongoDAO implements ISalidasDAO {
 
     private final MongoCollection<Document> coleccion;
 
@@ -37,6 +37,9 @@ public class SalidasMongoDAO implements ISalidasDAO{
         }
         if (salida.getIdSalida() == null) {
             salida.setIdSalida(MongoDocumentoMapper.nuevoId());
+        }
+        if (salida.getFolio() == null || salida.getFolio().isBlank()) {
+            salida.setFolio("GT-SAL-" + salida.getIdSalida());
         }
         if (salida.getFechaSalida() == null) {
             salida.setFechaSalida(LocalDate.now());
@@ -62,8 +65,7 @@ public class SalidasMongoDAO implements ISalidasDAO{
         }
         return salida;
     }
-    
-    
+
     @Override
     public List<Salida> obtenerPorFiltro(FiltroSalidaPersistenciaDTO filtro) {
         Bson consulta = construirFiltro(filtro);
@@ -73,7 +75,7 @@ public class SalidasMongoDAO implements ISalidasDAO{
         }
         return salidas;
     }
-    
+
     private Bson construirFiltro(FiltroSalidaPersistenciaDTO filtro) {
         if (filtro == null) {
             return new Document();

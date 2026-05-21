@@ -32,7 +32,7 @@ public class OrdenesMongoDAO implements IOrdenesDAO {
     }
 
     @Override
-    public Orden insertar(Orden orden) throws PersistenciaException {
+    public Orden insertarOrden(Orden orden) throws PersistenciaException {
         if (orden == null) {
             throw new PersistenciaException("La orden a insertar no puede ser nula.");
         }
@@ -44,7 +44,7 @@ public class OrdenesMongoDAO implements IOrdenesDAO {
     }
 
     @Override
-    public Orden actualizar(String idOrden, EstadoOrden estado) throws PersistenciaException {
+    public Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException {
         Orden orden = obtenerPorId(idOrden);
         orden.setEstado(estado);
         return actualizarOrdenCompleta(orden);

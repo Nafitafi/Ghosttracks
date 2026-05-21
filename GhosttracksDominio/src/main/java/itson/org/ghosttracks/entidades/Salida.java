@@ -13,11 +13,13 @@ import java.util.List;
  * @author nafbr
  */
 public class Salida {
+
     private String idSalida;
+    private String folio;
     private LocalDate fechaSalida;
     private String comenatriosSalida;
     private RazonSalida razon;
-    
+
     //Relaciones
     private String idSucursal;
     private String nombreSucursal;
@@ -41,6 +43,14 @@ public class Salida {
 
     public void setIdSalida(String idSalida) {
         this.idSalida = idSalida;
+    }
+
+    public String getFolio() {
+        return folio;
+    }
+
+    public void setFolio(String folio) {
+        this.folio = folio;
     }
 
     public LocalDate getFechaSalida() {
@@ -90,5 +100,5 @@ public class Salida {
     public void setProductosSalida(List<ProductoSalida> productosSalida) {
         this.productosSalida = productosSalida;
     }
-    
+
 }

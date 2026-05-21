@@ -18,6 +18,7 @@ public class SalidaMongoMapper {
         String id = MongoDocumentoMapper.idParaGuardar(salida.getIdSalida());
         salida.setIdSalida(id);
         return new Document("_id", id)
+                .append("folio", salida.getFolio())
                 .append("fecha_salida", MongoDocumentoMapper.fechaADate(salida.getFechaSalida()))
                 .append("razon_salida", MongoDocumentoMapper.nombreEnum(salida.getRazon()))
                 .append("comentarios", salida.getComenatriosSalida())
@@ -31,6 +32,7 @@ public class SalidaMongoMapper {
         }
         Salida salida = new Salida();
         salida.setIdSalida(MongoDocumentoMapper.documentoAId(doc.get("_id")));
+        salida.setFolio(doc.getString("folio"));
         salida.setFechaSalida(MongoDocumentoMapper.dateALocalDate(doc.getDate("fecha_salida")));
         salida.setRazon(MongoDocumentoMapper.enumValue(RazonSalida.class, doc.getString("razon_salida")));
         salida.setComenatriosSalida(doc.getString("comentarios"));

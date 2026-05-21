@@ -48,6 +48,11 @@ public class PantallaSalidas extends javax.swing.JPanel {
     }
 
     public void llenarTabla(List<SalidaDTO> salidas) {
+        TableColumn columnaId = tblSalidas.getColumnModel().getColumn(0);
+        columnaId.setMinWidth(0);
+        columnaId.setPreferredWidth(0);
+        columnaId.setMaxWidth(0);
+        columnaId.setResizable(false);
         this.salidasDesplegadas = salidas;
         DefaultTableModel model = (DefaultTableModel) tblSalidas.getModel();
         model.setRowCount(0);

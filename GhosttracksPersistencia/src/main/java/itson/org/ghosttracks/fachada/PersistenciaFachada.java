@@ -44,12 +44,12 @@ public class PersistenciaFachada implements IPersistenciaAbastecimiento {
 
     @Override
     public Orden insertarOrden(Orden orden) throws PersistenciaException {
-        return ordenesDAO.insertar(orden);
+        return ordenesDAO.insertarOrden(orden);
     }
 
     @Override
     public Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException {
-        return ordenesDAO.actualizar(idOrden, estado);
+        return ordenesDAO.actualizarEstadoOrden(idOrden, estado);
     }
 
     @Override

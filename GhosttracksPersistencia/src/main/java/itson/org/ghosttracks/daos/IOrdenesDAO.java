@@ -16,9 +16,9 @@ import java.util.List;
  */
 public interface IOrdenesDAO {
 
-    public abstract Orden insertar(Orden orden) throws PersistenciaException;
+    public abstract Orden insertarOrden(Orden orden) throws PersistenciaException;
 
-    public abstract Orden actualizar(String idOrden, EstadoOrden estado) throws PersistenciaException;
+    public abstract Orden actualizarEstadoOrden(String idOrden, EstadoOrden estado) throws PersistenciaException;
 
     public abstract Orden actualizarOrdenCompleta(Orden orden) throws PersistenciaException;
 

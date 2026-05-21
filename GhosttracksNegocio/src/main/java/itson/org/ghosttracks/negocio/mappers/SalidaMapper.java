@@ -40,7 +40,7 @@ public class SalidaMapper {
         }
         SalidaDTO dto = new SalidaDTO();
         dto.setIdSalida(salida.getIdSalida());
-        dto.setFolio("SAL-" + salida.getIdSalida());
+        dto.setFolio(salida.getFolio());
         dto.setFechaSalida(salida.getFechaSalida());
         dto.setComentarios(salida.getComenatriosSalida());
         dto.setRazon(salida.getRazon() != null ? RazonSalidaDTO.valueOf(salida.getRazon().name()) : null);

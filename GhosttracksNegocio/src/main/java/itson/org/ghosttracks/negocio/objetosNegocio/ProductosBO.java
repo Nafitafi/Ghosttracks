@@ -43,11 +43,42 @@ public class ProductosBO implements IProductosBO {
     }
 
     @Override
+    public ProductoDTO obtenerProductoDTOPorId(String id) throws NegocioException {
+        return ProductoMapper.toDTO(obtenerProductoPorId(id));
+    }
+
+    @Override
     public Producto obtenerProductoPorId(String id) throws NegocioException {
         try {
             return persistencia.obtenerProductoPorId(id);
         } catch (PersistenciaException e) {
             throw new NegocioException("Error al buscar el producto", e);
+        }
+    }
+
+    @Override
+    public Producto incrementarStockProducto(String idProducto, int cantidad) throws NegocioException {
+        validarIdProducto(idProducto);
+        try {
+            return persistencia.incrementarStockProducto(idProducto, cantidad);
+        } catch (PersistenciaException e) {
+            throw new NegocioException("Error al incrementar el stock del producto", e);
+        }
+    }
+
+    @Override
+    public Producto decrementarStockProducto(String idProducto, int cantidad) throws NegocioException {
+        validarIdProducto(idProducto);
+        try {
+            return persistencia.decrementarStockProducto(idProducto, cantidad);
+        } catch (PersistenciaException e) {
+            throw new NegocioException("Error al decrementar el stock del producto", e);
+        }
+    }
+
+    private void validarIdProducto(String idProducto) throws NegocioException {
+        if (idProducto == null || idProducto.isBlank()) {
+            throw new NegocioException("El identificador del producto es obligatorio.");
         }
     }
 }

@@ -19,5 +19,11 @@ public interface IProductosBO {
 
     public abstract List<ProductoDTO> obtenerProductosDisponibles() throws NegocioException;
 
+    public abstract ProductoDTO obtenerProductoDTOPorId(String id) throws NegocioException;
+
     public abstract Producto obtenerProductoPorId(String id) throws NegocioException;
+
+    public abstract Producto incrementarStockProducto(String idProducto, int cantidad) throws NegocioException;
+
+    public abstract Producto decrementarStockProducto(String idProducto, int cantidad) throws NegocioException;
 }
